@@ -525,6 +525,16 @@ const ROUND_SIZES = [3, 5, 8];
 
 const DISTRACTOR_POOL = ['m','a','s','d','t','i','n','p','g','o','c','k','u','b','f','e','l','h','r','j','v','y','w','z','x'];
 
+// Phonics pronunciations for TTS — maps each phoneme to a sound the speech engine renders correctly
+const PHONICS_SAY = {
+  'm':'mmm', 'a':'ah',  's':'sss', 'd':'duh', 't':'tuh',
+  'i':'ih',  'n':'nnn', 'p':'puh', 'g':'guh', 'o':'oh',
+  'c':'kuh', 'k':'kuh', 'u':'uh',  'b':'buh', 'f':'fff',
+  'e':'eh',  'l':'lll', 'h':'huh', 'r':'rrr', 'j':'juh',
+  'v':'vvv', 'y':'yuh', 'w':'wuh', 'z':'zzz', 'x':'ks',
+  'sh':'shh', 'ch':'chuh', 'th':'thh', 'ng':'ng',
+};
+
 // ── Settings ──────────────────────────────────────────────────────────────
 let settings = { groups:[1,2], includeSpecial:false, roundSize:5 };
 
@@ -723,6 +733,8 @@ function tapTile(tileEl, phoneme) {
   if (tileEl.classList.contains('used')) return;
   const w = roundWords[roundIndex];
   if (placed.length >= w.phonemes.length) return;
+
+  speak(PHONICS_SAY[phoneme] || phoneme, 0.75, 1.2);
 
   tileEl.classList.add('used');
   placed.push({ phoneme, tileEl });
