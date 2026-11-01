@@ -86,10 +86,9 @@
       80%     { transform: translateX(calc(-50% +  7px)); }
     }
     #car {
-      font-size: clamp(28px, 7vw, 42px);
-      display: block; line-height: 1;
-      transform: rotate(-90deg);
-      filter: drop-shadow(2px 2px 5px rgba(0,0,0,0.4));
+      display: block;
+      width: clamp(38px, 11vw, 60px); height: auto;
+      filter: drop-shadow(2px 3px 6px rgba(0,0,0,0.45));
     }
     /* Obstacle */
     #obstacle {
@@ -191,7 +190,27 @@
       <div id="road-markings"></div>
       <div id="finish-line"></div>
       <div id="obstacle"></div>
-      <div id="car-wrap"><span id="car">&#127950;</span></div>
+      <div id="car-wrap">
+        <svg id="car" viewBox="0 0 36 58" xmlns="http://www.w3.org/2000/svg">
+          <!-- front = top of SVG = toward finish line -->
+          <!-- wheels -->
+          <rect x="0"  y="4"  width="7" height="12" rx="2.5" fill="#1a1a1a"/>
+          <rect x="29" y="4"  width="7" height="12" rx="2.5" fill="#1a1a1a"/>
+          <rect x="0"  y="42" width="7" height="12" rx="2.5" fill="#1a1a1a"/>
+          <rect x="29" y="42" width="7" height="12" rx="2.5" fill="#1a1a1a"/>
+          <!-- body -->
+          <rect x="6" y="0" width="24" height="58" rx="9" fill="#e63946"/>
+          <!-- windscreen -->
+          <rect x="10" y="7"  width="16" height="12" rx="3" fill="rgba(180,230,255,0.88)"/>
+          <!-- rear window -->
+          <rect x="11" y="40" width="14" height="9"  rx="2" fill="rgba(180,230,255,0.62)"/>
+          <!-- headlights -->
+          <ellipse cx="12.5" cy="2.5" rx="3.2" ry="1.8" fill="#fffff0" opacity="0.96"/>
+          <ellipse cx="23.5" cy="2.5" rx="3.2" ry="1.8" fill="#fffff0" opacity="0.96"/>
+          <!-- roof stripe -->
+          <rect x="17" y="21" width="2" height="14" rx="1" fill="rgba(0,0,0,0.13)"/>
+        </svg>
+      </div>
     </div>
     <div id="grass-right">
       <span>&#127794;</span><span>&#127802;</span><span>&#127804;</span>
