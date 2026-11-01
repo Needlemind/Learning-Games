@@ -30,8 +30,6 @@
       font-size: clamp(16px,4.5vw,22px); font-weight: 900; color: #c2185b;
       text-shadow: 0 1px 4px rgba(255,255,255,0.7);
     }
-
-    /* Princess */
     #princess-area {
       flex-shrink: 0;
       height: clamp(220px, 50svh, 360px);
@@ -41,7 +39,6 @@
       height: 100%; width: auto; overflow: visible;
       filter: drop-shadow(0 8px 22px rgba(194,24,91,0.18));
     }
-    /* Item layers hidden by default; .show triggers the pop-in */
     .item-layer {
       opacity: 0;
       transform-box: fill-box; transform-origin: center;
@@ -54,7 +51,6 @@
       60%  { opacity: 1; transform: scale(1.2) rotate(6deg); }
       100% { opacity: 1; transform: scale(1) rotate(0deg); }
     }
-    /* Princess bounces when all done */
     #princess-svg.celebrate {
       animation: princess-bounce 0.48s ease infinite alternate;
     }
@@ -62,8 +58,6 @@
       from { transform: translateY(0); }
       to   { transform: translateY(-14px) scale(1.03); }
     }
-
-    /* Item buttons */
     #items-area {
       flex: 1; min-height: 0; width: 100%; max-width: 480px;
       display: flex; flex-direction: column;
@@ -102,11 +96,7 @@
       opacity: 0; transition: opacity 0.25s; font-weight: 900;
     }
     .item-btn.done .done-tick { opacity: 1; }
-
-    /* Floating sparkle particles */
     .spark { position: fixed; border-radius: 50%; pointer-events: none; z-index: 15; }
-
-    /* Win overlay */
     #win-screen {
       position: fixed; inset: 0;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -141,80 +131,58 @@
   </header>
 
   <div id="princess-area">
-    <!-- viewBox 200×320  —  front = up  -->
     <svg id="princess-svg" viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
 
-      <!-- ═══ STATIC PRINCESS ═══ -->
-
-      <!-- Hair behind head -->
+      <!-- ═══ PRINCESS ═══ -->
       <ellipse cx="100" cy="92" rx="53" ry="65" fill="#FFD54F"/>
       <ellipse cx="50"  cy="140" rx="19" ry="54" fill="#FFCA28"/>
       <ellipse cx="150" cy="140" rx="19" ry="54" fill="#FFCA28"/>
 
-      <!-- Skirt layers (back to front) -->
       <path d="M65,178 Q44,272 20,316 L180,316 Q156,272 135,178 Z" fill="#FCE4EC"/>
       <path d="M68,178 Q50,268 33,316 L167,316 Q150,268 132,178 Z" fill="#F8BBD0"/>
       <path d="M73,180 Q60,264 48,316 L152,316 Q140,264 127,180 Z" fill="#F48FB1"/>
-      <!-- Skirt sparkle stars -->
       <text x="68"  y="237" font-size="13" fill="#E91E63" opacity="0.55">&#10022;</text>
       <text x="112" y="272" font-size="11" fill="#E91E63" opacity="0.45">&#10022;</text>
       <text x="86"  y="304" font-size="9"  fill="#E91E63" opacity="0.35">&#10022;</text>
       <text x="125" y="240" font-size="9"  fill="#E91E63" opacity="0.35">&#10022;</text>
 
-      <!-- Bodice -->
       <rect x="72" y="150" width="56" height="33" rx="9" fill="#E91E63"/>
       <circle cx="100" cy="161" r="3.5" fill="white" opacity="0.5"/>
       <circle cx="91"  cy="168" r="2.5" fill="white" opacity="0.38"/>
       <circle cx="109" cy="168" r="2.5" fill="white" opacity="0.38"/>
 
-      <!-- Arms -->
       <ellipse cx="57"  cy="170" rx="13" ry="25" fill="#FFCCBC" transform="rotate(-18,57,170)"/>
       <ellipse cx="143" cy="170" rx="13" ry="25" fill="#FFCCBC" transform="rotate(18,143,170)"/>
       <ellipse cx="49"  cy="189" rx="9"  ry="8"  fill="#FFCCBC"/>
       <ellipse cx="151" cy="189" rx="9"  ry="8"  fill="#FFCCBC"/>
 
-      <!-- Head -->
       <circle cx="100" cy="92" r="46" fill="#FFCCBC"/>
-
-      <!-- Bangs / hair front -->
       <path d="M55,84 Q62,52 100,50 Q138,52 145,84 Q130,68 100,66 Q70,68 55,84 Z" fill="#FFD54F"/>
       <path d="M74,62 Q82,50 95,53" stroke="#FFE082" stroke-width="4.5" fill="none" stroke-linecap="round" opacity="0.65"/>
-
-      <!-- Neck -->
       <rect x="88" y="134" width="24" height="19" rx="5" fill="#FFCCBC"/>
 
-      <!-- Eyes whites -->
       <ellipse cx="85"  cy="90" rx="7.5" ry="8.5" fill="white"/>
       <ellipse cx="115" cy="90" rx="7.5" ry="8.5" fill="white"/>
-      <!-- Iris -->
-      <circle cx="86"  cy="91" r="5.5" fill="#5D4037"/>
-      <circle cx="114" cy="91" r="5.5" fill="#5D4037"/>
-      <circle cx="86"  cy="91" r="2.8" fill="#3E2723"/>
-      <circle cx="114" cy="91" r="2.8" fill="#3E2723"/>
-      <!-- Sparkle in eyes -->
+      <circle  cx="86"  cy="91" r="5.5" fill="#5D4037"/>
+      <circle  cx="114" cy="91" r="5.5" fill="#5D4037"/>
+      <circle  cx="86"  cy="91" r="2.8" fill="#3E2723"/>
+      <circle  cx="114" cy="91" r="2.8" fill="#3E2723"/>
       <circle cx="88"  cy="88" r="2.2" fill="white"/>
       <circle cx="116" cy="88" r="2.2" fill="white"/>
-      <!-- Lashes -->
       <line x1="77" y1="83" x2="75" y2="78" stroke="#4E342E" stroke-width="2" stroke-linecap="round"/>
       <line x1="83" y1="81" x2="82" y2="76" stroke="#4E342E" stroke-width="2" stroke-linecap="round"/>
       <line x1="89" y1="81" x2="89" y2="76" stroke="#4E342E" stroke-width="2" stroke-linecap="round"/>
       <line x1="111" y1="81" x2="111" y2="76" stroke="#4E342E" stroke-width="2" stroke-linecap="round"/>
       <line x1="117" y1="81" x2="118" y2="76" stroke="#4E342E" stroke-width="2" stroke-linecap="round"/>
       <line x1="123" y1="83" x2="125" y2="78" stroke="#4E342E" stroke-width="2" stroke-linecap="round"/>
-
-      <!-- Nose -->
       <ellipse cx="100" cy="101" rx="3.5" ry="2.5" fill="#FFAB91" opacity="0.6"/>
-
-      <!-- Smile -->
       <path d="M88,114 Q100,125 112,114" stroke="#E91E63" stroke-width="3.2" fill="none" stroke-linecap="round"/>
       <path d="M91,114 Q100,120 109,114 Q109,118 100,120 Q91,118 91,114 Z" fill="#EF9A9A" opacity="0.55"/>
-
-      <!-- Blush -->
       <ellipse cx="73"  cy="107" rx="12" ry="8" fill="#FF8A80" opacity="0.3"/>
       <ellipse cx="127" cy="107" rx="12" ry="8" fill="#FF8A80" opacity="0.3"/>
 
 
-      <!-- ═══ DRESSUP LAYERS (hidden until tapped) ═══ -->
+      <!-- ═══ DRESSUP LAYERS ═══ -->
 
       <!-- CROWN -->
       <g id="layer-crown" class="item-layer">
@@ -223,26 +191,25 @@
         <polygon points="97,44 100,8  103,44" fill="#FFD700"/>
         <polygon points="129,44 133,16 114,40" fill="#FFD700"/>
         <rect x="65" y="44" width="70" height="18" rx="5" fill="none" stroke="#FFA000" stroke-width="2"/>
-        <circle cx="78"  cy="53" r="6"   fill="#E91E63"/>
-        <circle cx="100" cy="53" r="7.5" fill="#9C27B0"/>
-        <circle cx="122" cy="53" r="6"   fill="#E91E63"/>
+        <circle class="crown-gem-a" cx="78"  cy="53" r="6"   fill="#E91E63"/>
+        <circle class="crown-gem-b" cx="100" cy="53" r="7.5" fill="#9C27B0"/>
+        <circle class="crown-gem-a" cx="122" cy="53" r="6"   fill="#E91E63"/>
         <circle cx="77"  cy="51" r="2.2" fill="white" opacity="0.7"/>
         <circle cx="99"  cy="51" r="2.8" fill="white" opacity="0.7"/>
         <circle cx="121" cy="51" r="2.2" fill="white" opacity="0.7"/>
-        <!-- tip sparkle -->
         <circle cx="100" cy="8" r="4.5" fill="white" opacity="0.9"/>
         <line x1="100" y1="0"  x2="100" y2="4"  stroke="white" stroke-width="2.5" stroke-linecap="round"/>
         <line x1="93"  y1="8"  x2="97"  y2="8"  stroke="white" stroke-width="2.5" stroke-linecap="round"/>
         <line x1="103" y1="8"  x2="107" y2="8"  stroke="white" stroke-width="2.5" stroke-linecap="round"/>
       </g>
 
-      <!-- HAIR BOW -->
+      <!-- HAIR BOW (right) -->
       <g id="layer-bow" class="item-layer">
-        <ellipse cx="138" cy="68" rx="15" ry="10" fill="#E91E63" transform="rotate(-28,138,68)"/>
-        <ellipse cx="162" cy="64" rx="15" ry="10" fill="#E91E63" transform="rotate(22,162,64)"/>
-        <ellipse cx="150" cy="67" rx="7.5" ry="6.5" fill="#C2185B"/>
-        <path d="M143,73 Q134,83 128,79" stroke="#E91E63" stroke-width="5.5" fill="none" stroke-linecap="round"/>
-        <path d="M157,73 Q166,83 172,79" stroke="#E91E63" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+        <ellipse class="bow-main" cx="138" cy="68" rx="15" ry="10" fill="#E91E63" transform="rotate(-28,138,68)"/>
+        <ellipse class="bow-main" cx="162" cy="64" rx="15" ry="10" fill="#E91E63" transform="rotate(22,162,64)"/>
+        <ellipse class="bow-knot" cx="150" cy="67" rx="7.5" ry="6.5" fill="#C2185B"/>
+        <path class="bow-tail" d="M143,73 Q134,83 128,79" stroke="#E91E63" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+        <path class="bow-tail" d="M157,73 Q166,83 172,79" stroke="#E91E63" stroke-width="5.5" fill="none" stroke-linecap="round"/>
         <circle cx="148" cy="65" r="2.8" fill="white" opacity="0.6"/>
       </g>
 
@@ -255,51 +222,69 @@
 
       <!-- MAGIC WAND -->
       <g id="layer-wand" class="item-layer">
-        <!-- handle -->
         <line x1="53" y1="214" x2="72" y2="178" stroke="#CE93D8" stroke-width="6.5" stroke-linecap="round"/>
-        <!-- handle sparkle dots -->
         <circle cx="58" cy="207" r="4"   fill="#F48FB1" opacity="0.85"/>
         <circle cx="64" cy="197" r="3"   fill="#EA80FC" opacity="0.8"/>
-        <!-- star -->
         <polygon points="72,157 75.8,169 88,169 78.1,177 81.9,189 72,181 62.1,189 65.9,177 56,169 68.2,169" fill="#FFD700"/>
         <polygon points="72,162 74.5,170 81,170 75.5,174 77.5,182 72,178 66.5,182 68.5,174 63,170 69.5,170" fill="#FFF59D"/>
         <circle cx="72" cy="168" r="3.5" fill="white" opacity="0.8"/>
-        <!-- sparkle trail -->
         <circle cx="88" cy="168" r="3.5" fill="#FFD700" opacity="0.7"/>
         <circle cx="96" cy="162" r="2.5" fill="#FFD700" opacity="0.5"/>
         <circle cx="93" cy="176" r="3"   fill="#FFEB3B" opacity="0.55"/>
       </g>
 
+      <!-- BUTTERFLY (right shoulder) -->
+      <g id="layer-butterfly" class="item-layer">
+        <!-- upper wings -->
+        <ellipse class="fly-upper" cx="143" cy="140" rx="13" ry="9"  fill="#CE93D8" transform="rotate(-38,143,140)"/>
+        <ellipse class="fly-upper" cx="163" cy="140" rx="13" ry="9"  fill="#CE93D8" transform="rotate(38,163,140)"/>
+        <!-- lower wings -->
+        <ellipse class="fly-lower" cx="145" cy="154" rx="10" ry="7"  fill="#BA68C8" transform="rotate(22,145,154)"/>
+        <ellipse class="fly-lower" cx="162" cy="154" rx="10" ry="7"  fill="#BA68C8" transform="rotate(-22,162,154)"/>
+        <!-- wing spots -->
+        <circle cx="141" cy="139" r="2.5" fill="white" opacity="0.55"/>
+        <circle cx="165" cy="139" r="2.5" fill="white" opacity="0.55"/>
+        <!-- body -->
+        <ellipse cx="153" cy="147" rx="2.5" ry="9" fill="#4A148C"/>
+        <!-- antennae -->
+        <path d="M153,138 Q149,131 146,129" stroke="#4A148C" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M153,138 Q157,131 160,129" stroke="#4A148C" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <circle cx="146" cy="129" r="2.2" fill="#E91E63"/>
+        <circle cx="160" cy="129" r="2.2" fill="#E91E63"/>
+      </g>
+
+      <!-- HAIR FLOWERS (left) -->
+      <g id="layer-flowers" class="item-layer">
+        <!-- big flower -->
+        <circle class="fl-petal" cx="52" cy="60" r="5" fill="#FF80AB"/>
+        <circle class="fl-petal" cx="52" cy="76" r="5" fill="#FF80AB"/>
+        <circle class="fl-petal" cx="44" cy="68" r="5" fill="#FF80AB"/>
+        <circle class="fl-petal" cx="60" cy="68" r="5" fill="#FF80AB"/>
+        <circle class="fl-petal" cx="46" cy="62" r="4.5" fill="#FF80AB"/>
+        <circle class="fl-petal" cx="58" cy="62" r="4.5" fill="#FF80AB"/>
+        <circle cx="52" cy="68" r="6.5" fill="#FFD740"/>
+        <circle cx="52" cy="68" r="3.2" fill="#FF8F00"/>
+        <!-- small flower -->
+        <circle class="fl-petal" cx="68" cy="57" r="3.8" fill="#FF80AB"/>
+        <circle class="fl-petal" cx="68" cy="65" r="3.8" fill="#FF80AB"/>
+        <circle class="fl-petal" cx="62" cy="61" r="3.8" fill="#FF80AB"/>
+        <circle class="fl-petal" cx="74" cy="61" r="3.8" fill="#FF80AB"/>
+        <circle cx="68" cy="61" r="4.5" fill="#FFD740"/>
+        <circle cx="68" cy="61" r="2"   fill="#FF8F00"/>
+      </g>
+
     </svg>
   </div>
 
-  <!-- Item buttons -->
   <div id="items-area">
     <div id="items-grid">
-      <button class="item-btn" data-item="crown">
-        <span class="done-tick">&#10003;</span>
-        <span class="item-icon">&#128081;</span>
-        <span class="item-label">Crown</span>
-      </button>
-      <button class="item-btn" data-item="bow">
-        <span class="done-tick">&#10003;</span>
-        <span class="item-icon">&#127872;</span>
-        <span class="item-label">Bow</span>
-      </button>
-      <button class="item-btn" data-item="necklace">
-        <span class="done-tick">&#10003;</span>
-        <span class="item-icon">&#128150;</span>
-        <span class="item-label">Necklace</span>
-      </button>
-      <button class="item-btn" data-item="wand">
-        <span class="done-tick">&#10003;</span>
-        <span class="item-icon">&#11088;</span>
-        <span class="item-label">Wand</span>
-      </button>
+      <button class="item-btn"><span class="done-tick">&#10003;</span><span class="item-icon"></span><span class="item-label"></span></button>
+      <button class="item-btn"><span class="done-tick">&#10003;</span><span class="item-icon"></span><span class="item-label"></span></button>
+      <button class="item-btn"><span class="done-tick">&#10003;</span><span class="item-icon"></span><span class="item-label"></span></button>
+      <button class="item-btn"><span class="done-tick">&#10003;</span><span class="item-icon"></span><span class="item-label"></span></button>
     </div>
   </div>
 
-  <!-- Win overlay -->
   <div id="win-screen">
     <div class="win-emoji">&#128144;</div>
     <div class="win-text">Beautiful!</div>
@@ -308,37 +293,115 @@
   </div>
 
   <script>
-    const ITEMS = {
-      crown:    { layer: 'layer-crown',    text: 'A beautiful crown!'   },
-      bow:      { layer: 'layer-bow',      text: 'A pretty bow!'        },
-      necklace: { layer: 'layer-necklace', text: 'A sparkly necklace!'  },
-      wand:     { layer: 'layer-wand',     text: 'A magic wand!'        },
-    };
+    const ALL_ITEMS = [
+      { id:'crown',     layer:'layer-crown',     icon:'&#128081;', label:'Crown',     text:'A beautiful crown!'   },
+      { id:'bow',       layer:'layer-bow',        icon:'&#127872;', label:'Bow',       text:'A pretty bow!'        },
+      { id:'necklace',  layer:'layer-necklace',   icon:'&#128150;', label:'Necklace',  text:'A sparkly necklace!'  },
+      { id:'wand',      layer:'layer-wand',       icon:'&#11088;',  label:'Wand',      text:'A magic wand!'        },
+      { id:'butterfly', layer:'layer-butterfly',  icon:'&#129419;', label:'Butterfly', text:'A pretty butterfly!'  },
+      { id:'flowers',   layer:'layer-flowers',    icon:'&#127800;', label:'Flowers',   text:'Pretty flowers!'      },
+    ];
+
+    // Colour palettes for randomisable items
+    const BOW_SCHEMES = [
+      { main:'#E91E63', knot:'#C2185B' },
+      { main:'#7B1FA2', knot:'#6A1B9A' },
+      { main:'#1565C0', knot:'#0D47A1' },
+      { main:'#E65100', knot:'#BF360C' },
+    ];
+    const FLY_SCHEMES = [
+      { upper:'#CE93D8', lower:'#AB47BC' },
+      { upper:'#80CBC4', lower:'#26A69A' },
+      { upper:'#90CAF9', lower:'#42A5F5' },
+      { upper:'#FFCC80', lower:'#FFA726' },
+    ];
+    const FLOWER_SCHEMES = [
+      { petal:'#FF80AB' },
+      { petal:'#CE93D8' },
+      { petal:'#90CAF9' },
+      { petal:'#A5D6A7' },
+    ];
+    const CROWN_SCHEMES = [
+      { a:'#E91E63', b:'#9C27B0' },
+      { a:'#1976D2', b:'#00897B' },
+      { a:'#F57C00', b:'#E91E63' },
+      { a:'#00897B', b:'#7B1FA2' },
+    ];
+
     const PINKS = ['#e91e63','#f48fb1','#ce93d8','#ffd54f','#ff80ab','#ea80fc','#fff176','#f8bbd0'];
 
-    let doneCount = 0;
-    const svgEl  = document.getElementById('princess-svg');
-    const winEl  = document.getElementById('win-screen');
+    let activeItems = [], doneCount = 0;
+    const svgEl = document.getElementById('princess-svg');
+    const winEl = document.getElementById('win-screen');
+    const btns  = Array.from(document.querySelectorAll('.item-btn'));
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length-1; i > 0; i--) {
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+      }
+      return a;
+    }
 
     function speak(text) {
       if (!('speechSynthesis' in window)) return;
       window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
-      u.rate = 0.85; u.pitch = 1.3; u.lang = 'en-GB';
+      u.rate=0.85; u.pitch=1.3; u.lang='en-GB';
       window.speechSynthesis.speak(u);
+    }
+
+    function pick(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
+
+    function setFill(sel, color) {
+      svgEl.querySelectorAll(sel).forEach(el => el.setAttribute('fill', color));
+    }
+    function setStroke(sel, color) {
+      svgEl.querySelectorAll(sel).forEach(el => el.setAttribute('stroke', color));
+    }
+
+    function recolour() {
+      // Bow
+      const bow = pick(BOW_SCHEMES);
+      setFill('.bow-main', bow.main);
+      setFill('.bow-knot', bow.knot);
+      setStroke('.bow-tail', bow.main);
+      // Butterfly
+      const fly = pick(FLY_SCHEMES);
+      setFill('.fly-upper', fly.upper);
+      setFill('.fly-lower', fly.lower);
+      // Flowers
+      setFill('.fl-petal', pick(FLOWER_SCHEMES).petal);
+      // Crown gems
+      const cr = pick(CROWN_SCHEMES);
+      setFill('.crown-gem-a', cr.a);
+      setFill('.crown-gem-b', cr.b);
+    }
+
+    function setupRound() {
+      activeItems = shuffle([...ALL_ITEMS]).slice(0, 4);
+      btns.forEach((btn, i) => {
+        const item = activeItems[i];
+        btn.dataset.item = item.id;
+        btn.querySelector('.item-icon').innerHTML = item.icon;
+        btn.querySelector('.item-label').textContent = item.label;
+        btn.classList.remove('done');
+      });
+      ALL_ITEMS.forEach(it => document.getElementById(it.layer).classList.remove('show'));
+      recolour();
+      doneCount = 0;
     }
 
     function burst(x, y) {
       for (let i = 0; i < 9; i++) {
-        const el  = document.createElement('div');
+        const el = document.createElement('div');
         el.className = 'spark';
-        const ang = (i / 9) * Math.PI * 2;
-        const d   = 36 + Math.random() * 40;
-        const s   = 7 + Math.random() * 9;
+        const ang = (i/9)*Math.PI*2, d = 36+Math.random()*40, s = 7+Math.random()*9;
         el.style.cssText =
-          `left:${x}px;top:${y}px;width:${s}px;height:${s}px;` +
-          `background:${PINKS[Math.floor(Math.random()*PINKS.length)]};` +
-          `animation:spark-fly 0.55s ease-out forwards;` +
+          `left:${x}px;top:${y}px;width:${s}px;height:${s}px;`+
+          `background:${pick(PINKS)};`+
+          `animation:spark-fly 0.55s ease-out forwards;`+
           `--tx:${Math.cos(ang)*d}px;--ty:${Math.sin(ang)*d}px`;
         document.body.appendChild(el);
         el.addEventListener('animationend', () => el.remove());
@@ -349,13 +412,13 @@
       for (let i = 0; i < 72; i++) {
         const el = document.createElement('div');
         el.className = 'confetti-piece';
-        const s = 7 + Math.random() * 10;
+        const s = 7+Math.random()*10;
         el.style.cssText =
-          `left:${Math.random()*100}vw;top:-20px;` +
-          `background:${PINKS[Math.floor(Math.random()*PINKS.length)]};` +
-          `border-radius:${Math.random()>.5?'50%':'4px'};` +
-          `width:${s}px;height:${s}px;` +
-          `animation-duration:${1.6+Math.random()*2}s;` +
+          `left:${Math.random()*100}vw;top:-20px;`+
+          `background:${pick(PINKS)};`+
+          `border-radius:${Math.random()>.5?'50%':'4px'};`+
+          `width:${s}px;height:${s}px;`+
+          `animation-duration:${1.6+Math.random()*2}s;`+
           `animation-delay:${Math.random()*0.7}s`;
         document.body.appendChild(el);
         el.addEventListener('animationend', () => el.remove());
@@ -364,22 +427,14 @@
 
     function onTap(btn) {
       if (btn.classList.contains('done')) return;
-      const id   = btn.dataset.item;
-      const item = ITEMS[id];
-      const layer = document.getElementById(item.layer);
-
-      // Show item on princess
-      layer.classList.add('show');
-      // Mark button done
+      const item = ALL_ITEMS.find(it => it.id === btn.dataset.item);
+      document.getElementById(item.layer).classList.add('show');
       btn.classList.add('done');
-      // Burst sparkles from button
       const r = btn.getBoundingClientRect();
-      burst(r.left + r.width / 2, r.top + r.height / 2);
-      // Speak
+      burst(r.left+r.width/2, r.top+r.height/2);
       speak(item.text);
-
       doneCount++;
-      if (doneCount >= Object.keys(ITEMS).length) {
+      if (doneCount >= 4) {
         setTimeout(() => {
           svgEl.classList.add('celebrate');
           winEl.classList.add('show');
@@ -390,27 +445,20 @@
     }
 
     function reset() {
-      doneCount = 0;
       svgEl.classList.remove('celebrate');
       winEl.classList.remove('show');
       document.querySelectorAll('.confetti-piece').forEach(el => el.remove());
-      Object.values(ITEMS).forEach(item => {
-        document.getElementById(item.layer).classList.remove('show');
-      });
-      document.querySelectorAll('.item-btn').forEach(b => b.classList.remove('done'));
+      setupRound();
     }
 
-    // Inject sparkle keyframe (uses CSS custom props for per-particle direction)
-    document.head.insertAdjacentHTML('beforeend', `<style>
-      @keyframes spark-fly {
-        0%   { transform: translate(0,0) scale(1); opacity: 1; }
-        100% { transform: translate(var(--tx),var(--ty)) scale(0); opacity: 0; }
-      }
+    document.head.insertAdjacentHTML('beforeend',`<style>
+      @keyframes spark-fly{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0}}
     </style>`);
 
-    document.querySelectorAll('.item-btn').forEach(b => b.addEventListener('click', () => onTap(b)));
+    btns.forEach(b => b.addEventListener('click', () => onTap(b)));
     document.getElementById('again-btn').addEventListener('click', reset);
 
+    setupRound();
     setTimeout(() => speak('Dress the princess!'), 700);
   </script>
 </body>
