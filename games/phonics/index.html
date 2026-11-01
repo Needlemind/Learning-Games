@@ -125,7 +125,7 @@
       border: 5px solid #8B5E3C;
       box-shadow: 0 8px 32px rgba(0,0,0,0.18);
       padding: 22px 18px 26px;
-      display: flex; flex-direction: column; align-items: center; gap: 14px;
+      display: flex; flex-direction: column; align-items: center; gap: clamp(7px, 2vw, 14px);
       position: relative; z-index: 1;
     }
     .card::before {
@@ -138,7 +138,7 @@
 
     /* ── Setup screen ──────────────────────────────────────────────── */
     #setup-screen { width: 100%; max-width: 680px; display: flex; flex-direction: column; align-items: center; gap: 0; position: relative; z-index: 1; }
-    #setup-screen .card { gap: 16px; }
+    #setup-screen .card { gap: clamp(7px, 2vw, 16px); }
 
     .setup-title { font-size: clamp(1.8rem,7vw,2.6rem); color: #4a7a1e; font-weight: 900; text-shadow: 1px 1px 0 #fff; }
     .setup-sub   { font-size: 1rem; color: #7a4e1e; font-weight: 800; }
@@ -146,7 +146,7 @@
     .group-row {
       width: 100%; display: flex; align-items: center; justify-content: space-between;
       background: #fef4e0; border: 2px solid #d4a040; border-radius: 12px;
-      padding: 10px 14px; gap: 10px;
+      padding: clamp(6px, 1.8vw, 10px) clamp(10px, 3vw, 14px); gap: 10px;
     }
     .group-info { display: flex; flex-direction: column; gap: 2px; }
     .group-name   { font-size: 0.85rem; font-weight: 800; color: #7a4e1e; }
@@ -204,7 +204,7 @@
     #wheat-row { font-size: 1.2rem; letter-spacing: 2px; min-height: 1.4rem; }
 
     #emoji-display {
-      font-size: clamp(5rem,18vw,7rem); line-height: 1;
+      font-size: clamp(3.5rem,15vw,7rem); line-height: 1;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));
       animation: bob 2.6s ease-in-out infinite;
     }
@@ -225,7 +225,7 @@
     #finger-label   { font-size: 0.85rem; color: #7a4e1e; font-weight: 800; }
     #finger-row     { display: flex; align-items: flex-end; gap: 7px; }
     .finger {
-      width: 30px; height: 50px;
+      width: clamp(22px, 5.5vw, 30px); height: clamp(36px, 9vw, 50px);
       background: linear-gradient(to bottom,#fde8c8 60%,#f5c890);
       border: 3px solid #c4852a;
       border-radius: 15px 15px 5px 5px;
@@ -244,13 +244,13 @@
     #finger-palm    { height: 22px; background: linear-gradient(to bottom,#fde8c8,#f5c890); border: 3px solid #c4852a; border-top: none; border-radius: 0 0 14px 14px; }
 
     /* ── Answer boxes ─────────────────────────────────────────────── */
-    #boxes { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    #boxes { display: flex; gap: clamp(7px, 2vw, 10px); justify-content: center; flex-wrap: wrap; }
     .box {
-      min-width: 70px; height: 74px; padding: 0 6px;
+      min-width: clamp(52px, 15vw, 70px); height: clamp(58px, 16vw, 74px); padding: 0 6px;
       border: 5px solid #8B2635; border-radius: 10px;
       background: white;
       display: flex; align-items: center; justify-content: center;
-      font-size: 2rem; font-weight: 900; color: #4a1a22;
+      font-size: clamp(1.4rem, 4.5vw, 2rem); font-weight: 900; color: #4a1a22;
       cursor: pointer; position: relative;
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.08), 0 3px 6px rgba(0,0,0,0.1);
       transition: background 0.2s, transform 0.15s, box-shadow 0.15s;
@@ -275,14 +275,14 @@
     #message { font-size: 1.7rem; font-weight: 900; color: #4a7a1e; min-height: 2.2rem; text-align: center; text-shadow: 1px 1px 0 rgba(255,255,255,0.8); }
 
     /* ── Tiles ───────────────────────────────────────────────────────── */
-    #tiles { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; min-height: 82px; align-items: center; }
+    #tiles { display: flex; gap: clamp(7px, 2vw, 10px); justify-content: center; flex-wrap: wrap; min-height: clamp(56px, 15vw, 82px); align-items: center; }
     .tile {
-      min-width: 70px; height: 74px; padding: 0 8px;
+      min-width: clamp(48px, 13vw, 70px); height: clamp(52px, 14vw, 74px); padding: 0 clamp(4px, 1.5vw, 8px);
       border-radius: 10px;
       background: linear-gradient(160deg,#d4a55a,#a07030);
       border: 3px solid #6b4010;
       display: flex; align-items: center; justify-content: center;
-      font-size: 2rem; font-weight: 900; color: #fff;
+      font-size: clamp(1.2rem, 4vw, 2rem); font-weight: 900; color: #fff;
       text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
       cursor: pointer;
       box-shadow: 0 5px 10px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.25);
