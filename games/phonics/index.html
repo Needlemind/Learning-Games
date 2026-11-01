@@ -3,36 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Word Farm</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    #home-btn {
-      position: fixed;
-      top: 14px;
-      left: 16px;
-      background: rgba(255,255,255,0.9);
-      border: none;
-      border-radius: 50%;
-      width: 46px;
-      height: 46px;
-      font-size: 22px;
-      cursor: pointer;
-      z-index: 20;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      text-decoration: none;
-    }
-
     body {
-      font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', cursive;
+      font-family: 'Nunito', 'Comic Sans MS', cursive;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 14px 12px 52px;
+      padding: 76px 12px 52px;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
       overflow-x: hidden;
@@ -41,7 +24,31 @@
         #b0e060 42%, #6cbf38 47%, #48a020 100%);
     }
 
-    /* ── Farm background scene ── */
+    /* ── Header ─────────────────────────────────────────────────── */
+    .game-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px;
+      background: rgba(0,0,0,0.2);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .game-title {
+      font-size: clamp(1.3rem, 5.5vw, 1.8rem);
+      font-weight: 900; color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .nav-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); border: none;
+      font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; color: inherit;
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .nav-btn:active { transform: scale(0.88); }
+
+    /* ── Farm background scene ───────────────────────────────── */
     #farm-bg {
       position: fixed;
       inset: 0;
@@ -50,7 +57,6 @@
       overflow: hidden;
     }
 
-    /* Sun */
     #farm-sun {
       position: absolute;
       top: 5%; right: 9%;
@@ -68,7 +74,6 @@
       50%      { box-shadow: 0 0 0 16px rgba(255,220,40,0.22), 0 0 0 34px rgba(255,200,0,0.12), 0 0 64px 28px rgba(255,180,0,0.22); }
     }
 
-    /* Clouds */
     .cloud {
       position: absolute;
       background: rgba(255,255,255,0.97);
@@ -81,433 +86,299 @@
       background: rgba(255,255,255,0.97);
       border-radius: 50%;
     }
-    #cloud1 {
-      width: 134px; height: 44px; top: 7%; left: 3%;
-      animation: cloud-drift 34s ease-in-out infinite;
-    }
+    #cloud1 { width: 134px; height: 44px; top: 7%; left: 3%; animation: cloud-drift 34s ease-in-out infinite; }
     #cloud1::before { width: 70px; height: 70px; top: -35px; left: 14px; }
     #cloud1::after  { width: 54px; height: 54px; top: -27px; left: 60px; }
-    #cloud2 {
-      width: 108px; height: 36px; top: 3%; left: 42%;
-      animation: cloud-drift 46s ease-in-out infinite 9s;
-    }
+    #cloud2 { width: 108px; height: 36px; top: 3%; left: 42%; animation: cloud-drift 46s ease-in-out infinite 9s; }
     #cloud2::before { width: 56px; height: 56px; top: -28px; left: 12px; }
     #cloud2::after  { width: 42px; height: 42px; top: -21px; left: 50px; }
-    #cloud3 {
-      width: 90px; height: 30px; top: 11%; right: 15%;
-      animation: cloud-drift 40s ease-in-out infinite 20s;
-    }
+    #cloud3 { width: 90px; height: 30px; top: 11%; right: 15%; animation: cloud-drift 40s ease-in-out infinite 20s; }
     #cloud3::before { width: 46px; height: 46px; top: -23px; left: 10px; }
     #cloud3::after  { width: 36px; height: 36px; top: -18px; left: 40px; }
-    @keyframes cloud-drift {
-      0%,100% { transform: translateX(0); }
-      50%      { transform: translateX(24px); }
-    }
+    @keyframes cloud-drift { 0%,100% { transform: translateX(0); } 50% { transform: translateX(24px); } }
 
-    /* Rolling hills at horizon */
-    #hill-left {
-      position: absolute;
-      bottom: 56%; left: -12%;
-      width: 58%; height: 160px;
-      background: radial-gradient(ellipse at 50% 100%, #4db830 55%, transparent 100%);
-      border-radius: 50% 50% 0 0;
-    }
-    #hill-right {
-      position: absolute;
-      bottom: 56%; right: -10%;
-      width: 62%; height: 130px;
-      background: radial-gradient(ellipse at 50% 100%, #45a828 55%, transparent 100%);
-      border-radius: 50% 50% 0 0;
-    }
+    #hill-left  { position: absolute; bottom: 56%; left: -12%; width: 58%; height: 160px; background: radial-gradient(ellipse at 50% 100%, #4db830 55%, transparent 100%); border-radius: 50% 50% 0 0; }
+    #hill-right { position: absolute; bottom: 56%; right: -10%; width: 62%; height: 130px; background: radial-gradient(ellipse at 50% 100%, #45a828 55%, transparent 100%); border-radius: 50% 50% 0 0; }
 
-    /* Fence at horizon */
     #farm-fence {
-      position: absolute;
-      left: 0; right: 0;
-      height: 20px;
-      top: calc(40% - 10px);
+      position: absolute; left: 0; right: 0; height: 20px; top: calc(40% - 10px);
       background: repeating-linear-gradient(90deg, #8B5E3C 0px, #8B5E3C 18px, transparent 18px, transparent 32px);
-      border-top: 4px solid #6b3f18;
-      border-bottom: 4px solid #6b3f18;
+      border-top: 4px solid #6b3f18; border-bottom: 4px solid #6b3f18;
     }
 
-    /* Barn */
     #farm-barn { position: absolute; top: calc(40% - 98px); left: 3%; }
-    #barn-body {
-      width: 72px; height: 62px;
-      background: linear-gradient(to right, #c0392b, #a93226);
-      border: 2px solid #7b241c;
-      position: relative;
-    }
-    #barn-roof {
-      position: absolute;
-      top: -34px; left: -7px;
-      width: 0; height: 0;
-      border-left: 43px solid transparent;
-      border-right: 43px solid transparent;
-      border-bottom: 36px solid #7b241c;
-    }
-    #barn-door {
-      position: absolute;
-      bottom: 0; left: 50%; transform: translateX(-50%);
-      width: 22px; height: 30px;
-      background: #4a2810;
-      border-radius: 11px 11px 0 0;
-    }
-    #barn-window {
-      position: absolute;
-      top: 11px; right: 9px;
-      width: 14px; height: 14px;
-      background: #ffe090;
-      border: 2px solid #4a2810;
-      border-radius: 2px;
-    }
+    #barn-body { width: 72px; height: 62px; background: linear-gradient(to right, #c0392b, #a93226); border: 2px solid #7b241c; position: relative; }
+    #barn-roof { position: absolute; top: -34px; left: -7px; width: 0; height: 0; border-left: 43px solid transparent; border-right: 43px solid transparent; border-bottom: 36px solid #7b241c; }
+    #barn-door { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 22px; height: 30px; background: #4a2810; border-radius: 11px 11px 0 0; }
+    #barn-window { position: absolute; top: 11px; right: 9px; width: 14px; height: 14px; background: #ffe090; border: 2px solid #4a2810; border-radius: 2px; }
 
-    /* Trees */
-    .farm-tree {
-      position: absolute;
-      filter: drop-shadow(1px 3px 5px rgba(0,0,0,0.2));
-      line-height: 1;
-    }
+    .farm-tree { position: absolute; filter: drop-shadow(1px 3px 5px rgba(0,0,0,0.2)); line-height: 1; }
     #tree1 { font-size: 3.4rem; top: calc(40% - 54px); left: 16%; }
     #tree2 { font-size: 2.8rem; top: calc(40% - 44px); left: 25%; }
     #tree3 { font-size: 3.2rem; top: calc(40% - 51px); right: 6%; }
 
-    /* ── Shared card ── */
+    /* ── Shared card ───────────────────────────────────────────────── */
     .card {
-      width: 100%;
-      max-width: 680px;
+      width: 100%; max-width: 680px;
       background: rgba(255,252,240,0.94);
       border-radius: 24px;
       border: 5px solid #8B5E3C;
       box-shadow: 0 8px 32px rgba(0,0,0,0.18);
       padding: 22px 18px 26px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      position: relative;
-      z-index: 1;
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
+      position: relative; z-index: 1;
     }
     .card::before {
-      content: '';
-      display: block;
-      width: calc(100% + 10px);
-      height: 10px;
+      content: ''; display: block;
+      width: calc(100% + 10px); height: 10px;
       background: repeating-linear-gradient(90deg, #a07840 0px, #c8a060 12px, #a07840 24px);
       border-radius: 4px 4px 0 0;
-      margin: -22px -18px 0;
-      align-self: stretch;
+      margin: -22px -18px 0; align-self: stretch;
     }
 
-    /* ── Game header ── */
-    #game-header {
-      width: 100%;
-      max-width: 680px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      position: relative;
-      z-index: 1;
-    }
-    #title      { font-size: clamp(1.5rem,5.5vw,2rem); color:#fff; text-shadow:2px 2px 0 #3a6a10,0 0 12px rgba(0,0,0,0.2); }
-    #wheat-row  { font-size:1.5rem; letter-spacing:3px; }
-    #settings-btn {
-      background: rgba(255,255,255,0.85);
-      border: 2px solid #8B5E3C;
-      border-radius: 50%;
-      width: 38px; height: 38px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-    }
+    /* ── Setup screen ──────────────────────────────────────────────── */
+    #setup-screen { width: 100%; max-width: 680px; display: flex; flex-direction: column; align-items: center; gap: 0; position: relative; z-index: 1; }
+    #setup-screen .card { gap: 16px; }
 
-    /* ── Setup screen ── */
-    #setup-screen { width:100%; max-width:680px; display:flex; flex-direction:column; align-items:center; gap:0; position:relative; z-index:1; }
-    #setup-screen .card { gap:16px; }
-
-    .setup-title { font-size:clamp(1.8rem,7vw,2.6rem); color:#4a7a1e; text-shadow:1px 1px 0 #fff; }
-    .setup-sub   { font-size:1rem; color:#7a4e1e; font-weight:bold; }
+    .setup-title { font-size: clamp(1.8rem,7vw,2.6rem); color: #4a7a1e; font-weight: 900; text-shadow: 1px 1px 0 #fff; }
+    .setup-sub   { font-size: 1rem; color: #7a4e1e; font-weight: 800; }
 
     .group-row {
-      width:100%;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      background:#fef4e0;
-      border:2px solid #d4a040;
-      border-radius:12px;
-      padding:10px 14px;
-      gap:10px;
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      background: #fef4e0; border: 2px solid #d4a040; border-radius: 12px;
+      padding: 10px 14px; gap: 10px;
     }
-    .group-info { display:flex; flex-direction:column; gap:2px; }
-    .group-name { font-size:0.85rem; font-weight:bold; color:#7a4e1e; }
-    .group-sounds{ font-size:1.1rem; color:#3a3a3a; letter-spacing:2px; }
+    .group-info { display: flex; flex-direction: column; gap: 2px; }
+    .group-name   { font-size: 0.85rem; font-weight: 800; color: #7a4e1e; }
+    .group-sounds { font-size: 1.1rem; color: #3a3a3a; letter-spacing: 2px; }
 
     .toggle-btn {
-      flex-shrink:0;
-      padding:7px 18px;
-      border-radius:50px;
-      border:3px solid #aaa;
-      background:#ddd;
-      font-family:inherit;
-      font-size:0.95rem;
-      font-weight:bold;
-      color:#666;
-      cursor:pointer;
-      transition:background 0.2s, border-color 0.2s, color 0.2s;
-      min-width:60px;
+      flex-shrink: 0; padding: 7px 18px;
+      border-radius: 50px; border: 3px solid #aaa;
+      background: #ddd; font-family: inherit;
+      font-size: 0.95rem; font-weight: 800; color: #666;
+      cursor: pointer; min-width: 60px;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
     }
-    .toggle-btn.on {
-      background:linear-gradient(145deg,#4cbf4c,#2a8a2a);
-      border-color:#1a5a1a;
-      color:#fff;
-    }
+    .toggle-btn.on { background: linear-gradient(145deg,#4cbf4c,#2a8a2a); border-color: #1a5a1a; color: #fff; }
 
     .special-row {
-      width:100%;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      background:#e8f0fe;
-      border:2px solid #7a9ad0;
-      border-radius:12px;
-      padding:10px 14px;
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      background: #e8f0fe; border: 2px solid #7a9ad0; border-radius: 12px; padding: 10px 14px;
     }
-    .special-label { font-size:1rem; color:#2a3a6a; font-weight:bold; }
-    .special-sub   { font-size:0.8rem; color:#5a6aaa; }
+    .special-label { font-size: 1rem; color: #2a3a6a; font-weight: 800; }
+    .special-sub   { font-size: 0.8rem; color: #5a6aaa; }
 
     .round-size-row {
-      width:100%;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-      gap:8px;
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 8px;
     }
-    .round-size-row label { font-size:1rem; color:#7a4e1e; font-weight:bold; }
-    .size-picker { display:flex; gap:8px; }
+    .round-size-row label { font-size: 1rem; color: #7a4e1e; font-weight: 800; }
+    .size-picker { display: flex; gap: 8px; }
     .size-btn {
-      width:48px; height:48px;
-      border-radius:12px;
-      border:3px solid #aaa;
-      background:#eee;
-      font-family:inherit;
-      font-size:1.2rem;
-      font-weight:bold;
-      color:#666;
-      cursor:pointer;
-      transition:all 0.2s;
+      width: 48px; height: 48px; border-radius: 12px;
+      border: 3px solid #aaa; background: #eee;
+      font-family: inherit; font-size: 1.2rem; font-weight: 800; color: #666;
+      cursor: pointer; transition: all 0.2s;
     }
-    .size-btn.active {
-      background:linear-gradient(145deg,#f5c518,#e08000);
-      border-color:#8B5500;
-      color:#fff;
-    }
+    .size-btn.active { background: linear-gradient(145deg,#f5c518,#e08000); border-color: #8B5500; color: #fff; }
 
-    #word-count-msg { font-size:0.9rem; color:#4a7a1e; min-height:1.2rem; }
+    #word-count-msg { font-size: 0.9rem; color: #4a7a1e; min-height: 1.2rem; font-weight: 700; }
 
     .play-btn {
-      padding:16px 44px;
-      font-size:1.5rem;
-      background:linear-gradient(145deg,#4cbf4c,#2a8a2a);
-      border:3px solid #1a5a1a;
-      border-radius:50px;
-      cursor:pointer;
-      font-family:inherit;
-      font-weight:bold;
-      color:#fff;
-      text-shadow:1px 1px 2px rgba(0,0,0,0.3);
-      box-shadow:0 5px 14px rgba(0,0,0,0.18);
-      transition:transform 0.1s;
+      padding: 16px 44px; font-size: 1.5rem;
+      background: linear-gradient(145deg,#4cbf4c,#2a8a2a);
+      border: 3px solid #1a5a1a; border-radius: 50px;
+      cursor: pointer; font-family: inherit; font-weight: 900; color: #fff;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      box-shadow: 0 5px 14px rgba(0,0,0,0.18);
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
     }
-    .play-btn:disabled { opacity:0.45; cursor:not-allowed; }
-    .play-btn:not(:disabled):active { transform:scale(0.95); }
+    .play-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .play-btn:not(:disabled):active { transform: scale(0.93); }
 
-    /* ── Game area ── */
-    #game-area { width:100%; max-width:680px; display:none; flex-direction:column; align-items:center; gap:10px; position:relative; z-index:1; }
+    /* ── Game area ────────────────────────────────────────────────── */
+    #game-area { width: 100%; max-width: 680px; display: none; flex-direction: column; align-items: center; gap: 10px; position: relative; z-index: 1; }
 
-    #progress { font-size:0.95rem; color:#7a4e1e; font-weight:bold; letter-spacing:1px; }
+    #progress { font-size: 0.95rem; color: #7a4e1e; font-weight: 800; letter-spacing: 1px; }
+    #wheat-row { font-size: 1.2rem; letter-spacing: 2px; min-height: 1.4rem; }
 
     #emoji-display {
-      font-size:clamp(5rem,18vw,7rem);
-      line-height:1;
-      filter:drop-shadow(0 4px 10px rgba(0,0,0,0.15));
-      animation:bob 2.6s ease-in-out infinite;
+      font-size: clamp(5rem,18vw,7rem); line-height: 1;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));
+      animation: bob 2.6s ease-in-out infinite;
     }
     @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
 
     #hear-btn {
-      background:linear-gradient(145deg,#ffe066,#f5c518);
-      border:3px solid #a07800;
-      border-radius:50px;
-      padding:8px 22px;
-      font-size:1.05rem;
-      font-family:inherit;
-      font-weight:bold;
-      color:#5c3a00;
-      cursor:pointer;
-      box-shadow:0 4px 10px rgba(0,0,0,0.12);
-      transition:transform 0.1s;
+      background: linear-gradient(145deg,#ffe066,#f5c518);
+      border: 3px solid #a07800; border-radius: 50px;
+      padding: 8px 22px; font-size: 1.05rem;
+      font-family: inherit; font-weight: 800; color: #5c3a00;
+      cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
     }
-    #hear-btn:active { transform:scale(0.94); }
+    #hear-btn:active { transform: scale(0.93); }
 
-    /* ── Fred fingers ── */
-    #finger-section { display:flex; flex-direction:column; align-items:center; gap:4px; }
-    #finger-label   { font-size:0.85rem; color:#7a4e1e; font-weight:bold; }
-    #finger-row     { display:flex; align-items:flex-end; gap:7px; }
+    /* ── Fred fingers ─────────────────────────────────────────────── */
+    #finger-section { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    #finger-label   { font-size: 0.85rem; color: #7a4e1e; font-weight: 800; }
+    #finger-row     { display: flex; align-items: flex-end; gap: 7px; }
     .finger {
-      width:30px; height:50px;
-      background:linear-gradient(to bottom,#fde8c8 60%,#f5c890);
-      border:3px solid #c4852a;
-      border-radius:15px 15px 5px 5px;
-      transition:transform 0.18s ease, background 0.2s, border-color 0.2s;
-      position:relative; flex-shrink:0;
+      width: 30px; height: 50px;
+      background: linear-gradient(to bottom,#fde8c8 60%,#f5c890);
+      border: 3px solid #c4852a;
+      border-radius: 15px 15px 5px 5px;
+      transition: transform 0.18s ease, background 0.2s, border-color 0.2s;
+      position: relative; flex-shrink: 0;
     }
     .finger::after {
-      content:''; position:absolute;
-      left:5px; right:5px; top:15px; height:2px;
-      background:rgba(0,0,0,0.1); border-radius:1px;
-      box-shadow:0 7px 0 rgba(0,0,0,0.07);
+      content: ''; position: absolute;
+      left: 5px; right: 5px; top: 15px; height: 2px;
+      background: rgba(0,0,0,0.1); border-radius: 1px;
+      box-shadow: 0 7px 0 rgba(0,0,0,0.07);
     }
-    .finger.pressed  { transform:translateY(16px) scaleY(0.72); background:linear-gradient(to bottom,#f5a860,#d96e10); border-color:#8B4400; }
-    .finger.correct  { transform:translateY(0) scaleY(1); background:linear-gradient(to bottom,#a0ee88,#4cbe40); border-color:#1a7a1a; animation:pop 0.3s ease; }
-    .finger.wrong    { background:linear-gradient(to bottom,#ffaaaa,#e04040); border-color:#aa1010; }
-    #finger-palm     { height:22px; background:linear-gradient(to bottom,#fde8c8,#f5c890); border:3px solid #c4852a; border-top:none; border-radius:0 0 14px 14px; }
+    .finger.pressed { transform: translateY(16px) scaleY(0.72); background: linear-gradient(to bottom,#f5a860,#d96e10); border-color: #8B4400; }
+    .finger.correct { transform: translateY(0) scaleY(1); background: linear-gradient(to bottom,#a0ee88,#4cbe40); border-color: #1a7a1a; animation: pop 0.3s ease; }
+    .finger.wrong   { background: linear-gradient(to bottom,#ffaaaa,#e04040); border-color: #aa1010; }
+    #finger-palm    { height: 22px; background: linear-gradient(to bottom,#fde8c8,#f5c890); border: 3px solid #c4852a; border-top: none; border-radius: 0 0 14px 14px; }
 
-    /* ── Answer boxes ── */
-    #boxes { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+    /* ── Answer boxes ─────────────────────────────────────────────── */
+    #boxes { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
     .box {
-      min-width:70px; height:74px; padding:0 6px;
-      border:5px solid #8B2635; border-radius:10px;
-      background:white;
-      display:flex; align-items:center; justify-content:center;
-      font-size:2rem; font-weight:bold; color:#4a1a22;
-      cursor:pointer; position:relative;
-      box-shadow:inset 0 2px 4px rgba(0,0,0,0.08), 0 3px 6px rgba(0,0,0,0.1);
-      transition:background 0.2s, transform 0.15s, box-shadow 0.15s;
+      min-width: 70px; height: 74px; padding: 0 6px;
+      border: 5px solid #8B2635; border-radius: 10px;
+      background: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; font-weight: 900; color: #4a1a22;
+      cursor: pointer; position: relative;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.08), 0 3px 6px rgba(0,0,0,0.1);
+      transition: background 0.2s, transform 0.15s, box-shadow 0.15s;
     }
-    .box:empty::after { content:''; position:absolute; inset:6px; border:2px dashed #ddd; border-radius:4px; }
-    .box.filled  { background:#fef8e8; }
-    .box.correct { background:#d4f5d0; border-color:#2a7a30; color:#1a4a1e; animation:pop 0.35s ease; }
-    .box.wrong   { animation:shake 0.45s ease; }
-    .box.fred-pulse { transform:scale(1.22); box-shadow:0 0 0 5px #ffd700, 0 0 18px rgba(255,215,0,0.5); z-index:3; }
+    .box:empty::after { content: ''; position: absolute; inset: 6px; border: 2px dashed #ddd; border-radius: 4px; }
+    .box.filled  { background: #fef8e8; }
+    .box.correct { background: #d4f5d0; border-color: #2a7a30; color: #1a4a1e; animation: pop 0.35s ease; }
+    .box.wrong   { animation: shake 0.45s ease; }
+    .box.fred-pulse { transform: scale(1.22); box-shadow: 0 0 0 5px #ffd700, 0 0 18px rgba(255,215,0,0.5); z-index: 3; }
     .box.digraph::before {
-      content:'★'; position:absolute; top:-12px; right:-10px;
-      font-size:0.72rem; background:#ffd700; color:#5c4000;
-      border-radius:50%; width:20px; height:20px;
-      display:flex; align-items:center; justify-content:center; line-height:20px;
-      box-shadow:0 1px 4px rgba(0,0,0,0.2);
+      content: '★'; position: absolute; top: -12px; right: -10px;
+      font-size: 0.72rem; background: #ffd700; color: #5c4000;
+      border-radius: 50%; width: 20px; height: 20px;
+      display: flex; align-items: center; justify-content: center; line-height: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     }
 
     @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-9px)} 40%{transform:translateX(9px)} 60%{transform:translateX(-9px)} 80%{transform:translateX(9px)} }
     @keyframes pop   { 0%{transform:scale(1)} 50%{transform:scale(1.2)} 100%{transform:scale(1)} }
 
-    /* ── Message ── */
-    #message { font-size:1.7rem; font-weight:bold; color:#4a7a1e; min-height:2.2rem; text-align:center; text-shadow:1px 1px 0 rgba(255,255,255,0.8); }
+    /* ── Message ───────────────────────────────────────────────────── */
+    #message { font-size: 1.7rem; font-weight: 900; color: #4a7a1e; min-height: 2.2rem; text-align: center; text-shadow: 1px 1px 0 rgba(255,255,255,0.8); }
 
-    /* ── Tiles ── */
-    #tiles { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; min-height:82px; align-items:center; }
+    /* ── Tiles ───────────────────────────────────────────────────────── */
+    #tiles { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; min-height: 82px; align-items: center; }
     .tile {
-      min-width:70px; height:74px; padding:0 8px;
-      border-radius:10px;
-      background:linear-gradient(160deg,#d4a55a,#a07030);
-      border:3px solid #6b4010;
-      display:flex; align-items:center; justify-content:center;
-      font-size:2rem; font-weight:bold; color:#fff;
-      text-shadow:1px 1px 2px rgba(0,0,0,0.4);
-      cursor:pointer;
-      box-shadow:0 5px 10px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.25);
-      transition:transform 0.1s, opacity 0.25s;
+      min-width: 70px; height: 74px; padding: 0 8px;
+      border-radius: 10px;
+      background: linear-gradient(160deg,#d4a55a,#a07030);
+      border: 3px solid #6b4010;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; font-weight: 900; color: #fff;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+      cursor: pointer;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.25);
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s;
     }
-    .tile.digraph { background:linear-gradient(160deg,#4a9e4a,#2d6a2d); border-color:#1a4010; }
-    .tile:active  { transform:scale(0.88); }
-    .tile.used    { opacity:0; pointer-events:none; }
+    .tile.digraph { background: linear-gradient(160deg,#4a9e4a,#2d6a2d); border-color: #1a4010; }
+    .tile:active  { transform: scale(0.88); }
+    .tile.used    { opacity: 0; pointer-events: none; }
 
-    /* ── Buttons ── */
+    /* ── Next button ─────────────────────────────────────────────── */
     #next-btn {
-      display:none; padding:14px 38px; font-size:1.35rem;
-      background:linear-gradient(145deg,#4cbf4c,#2a8a2a); border:3px solid #1a5a1a;
-      border-radius:50px; cursor:pointer; font-family:inherit; font-weight:bold; color:#fff;
-      text-shadow:1px 1px 2px rgba(0,0,0,0.3);
-      box-shadow:0 5px 14px rgba(0,0,0,0.18); transition:transform 0.1s;
+      display: none; padding: 14px 38px; font-size: 1.35rem;
+      background: linear-gradient(145deg,#4cbf4c,#2a8a2a); border: 3px solid #1a5a1a;
+      border-radius: 50px; cursor: pointer; font-family: inherit; font-weight: 900; color: #fff;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      box-shadow: 0 5px 14px rgba(0,0,0,0.18);
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
     }
-    #next-btn:active { transform:scale(0.95); }
+    #next-btn:active { transform: scale(0.93); }
 
-    /* ── Round-end screen ── */
-    #round-end { width:100%; max-width:680px; display:none; flex-direction:column; align-items:center; gap:0; position:relative; z-index:1; }
-    #round-end .card { gap:14px; }
+    /* ── Round-end screen ──────────────────────────────────────────── */
+    #round-end { width: 100%; max-width: 680px; display: none; flex-direction: column; align-items: center; gap: 0; position: relative; z-index: 1; }
+    #round-end .card { gap: 14px; }
 
-    .round-end-title { font-size:clamp(1.8rem,7vw,2.6rem); color:#4a7a1e; }
+    .round-end-title { font-size: clamp(1.8rem,7vw,2.6rem); color: #4a7a1e; font-weight: 900; }
 
-    .result-grid { width:100%; display:flex; flex-direction:column; gap:8px; }
+    .result-grid { width: 100%; display: flex; flex-direction: column; gap: 8px; }
     .result-row {
-      display:flex; align-items:center; gap:10px;
-      background:#fef8e8; border:2px solid #d4a040;
-      border-radius:12px; padding:8px 14px;
+      display: flex; align-items: center; gap: 10px;
+      background: #fef8e8; border: 2px solid #d4a040;
+      border-radius: 12px; padding: 8px 14px;
     }
-    .result-emoji { font-size:1.8rem; flex-shrink:0; }
-    .result-word  { font-size:1.3rem; font-weight:bold; color:#3a1a00; flex:1; }
-    .result-badge {
-      font-size:1.4rem; flex-shrink:0;
-      background:#f5f5f5; border-radius:8px;
-      padding:2px 8px; font-size:0.9rem; font-weight:bold;
-    }
-    .result-badge.first { background:#fff3b0; color:#8B6000; }
-    .result-badge.retry { background:#ffe0e0; color:#8B0000; }
+    .result-emoji { font-size: 1.8rem; flex-shrink: 0; }
+    .result-word  { font-size: 1.3rem; font-weight: 900; color: #3a1a00; flex: 1; }
+    .result-badge { flex-shrink: 0; background: #f5f5f5; border-radius: 8px; padding: 2px 8px; font-size: 0.9rem; font-weight: 800; }
+    .result-badge.first { background: #fff3b0; color: #8B6000; }
+    .result-badge.retry { background: #ffe0e0; color: #8B0000; }
 
-    .round-score-msg { font-size:1.1rem; color:#4a7a1e; font-weight:bold; text-align:center; }
+    .round-score-msg { font-size: 1.1rem; color: #4a7a1e; font-weight: 800; text-align: center; }
 
-    .action-row { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+    .action-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
     .btn-green {
-      padding:14px 30px; font-size:1.2rem;
-      background:linear-gradient(145deg,#4cbf4c,#2a8a2a); border:3px solid #1a5a1a;
-      border-radius:50px; cursor:pointer; font-family:inherit; font-weight:bold; color:#fff;
-      text-shadow:1px 1px 2px rgba(0,0,0,0.25);
-      box-shadow:0 5px 12px rgba(0,0,0,0.15); transition:transform 0.1s;
+      padding: 14px 30px; font-size: 1.2rem;
+      background: linear-gradient(145deg,#4cbf4c,#2a8a2a); border: 3px solid #1a5a1a;
+      border-radius: 50px; cursor: pointer; font-family: inherit; font-weight: 900; color: #fff;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.25);
+      box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
     }
     .btn-brown {
-      padding:14px 30px; font-size:1.2rem;
-      background:linear-gradient(145deg,#c8a060,#8B5E3C); border:3px solid #5a3010;
-      border-radius:50px; cursor:pointer; font-family:inherit; font-weight:bold; color:#fff;
-      text-shadow:1px 1px 2px rgba(0,0,0,0.25);
-      box-shadow:0 5px 12px rgba(0,0,0,0.15); transition:transform 0.1s;
+      padding: 14px 30px; font-size: 1.2rem;
+      background: linear-gradient(145deg,#c8a060,#8B5E3C); border: 3px solid #5a3010;
+      border-radius: 50px; cursor: pointer; font-family: inherit; font-weight: 900; color: #fff;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.25);
+      box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
     }
-    .btn-green:active, .btn-brown:active { transform:scale(0.95); }
+    .btn-green:active, .btn-brown:active { transform: scale(0.93); }
 
-    /* ── Tractor ── */
+    /* ── Tractor ───────────────────────────────────────────────────── */
     #tractor-wrap {
-      position:fixed; bottom:28px; left:-180px;
-      font-size:4rem; pointer-events:none; z-index:10;
-      filter:drop-shadow(2px 4px 6px rgba(0,0,0,0.25)) hue-rotate(85deg) saturate(1.6);
-      transform:scaleX(-1);
+      position: fixed; bottom: 28px; left: -180px;
+      font-size: 4rem; pointer-events: none; z-index: 10;
+      filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.25)) hue-rotate(85deg) saturate(1.6);
+      transform: scaleX(-1);
     }
-    #tractor-wrap.go { animation:tractor-drive 5.5s linear forwards; }
+    #tractor-wrap.go { animation: tractor-drive 5.5s linear forwards; }
     @keyframes tractor-drive { 0%{left:-180px} 100%{left:110vw} }
 
-    /* ── Confetti ── */
-    #celebrate { position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:9; }
-    .confetti  { position:absolute; width:12px; height:12px; top:-20px; animation:fall linear forwards; }
+    /* ── Confetti ──────────────────────────────────────────────────── */
+    #celebrate { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 9; }
+    .confetti  { position: absolute; width: 12px; height: 12px; top: -20px; animation: fall linear forwards; }
     @keyframes fall { to{transform:translateY(110vh) rotate(720deg); opacity:0} }
 
-    /* ── Farm strip ── */
+    /* ── Farm strip ───────────────────────────────────────────────── */
     #farm-strip {
-      position:fixed; bottom:0; left:0; right:0; height:44px;
-      background:#4a8a2a; border-top:4px solid #3a6a1a;
-      display:flex; align-items:center; justify-content:center;
-      font-size:1.5rem; letter-spacing:5px;
-      pointer-events:none; z-index:2;
+      position: fixed; bottom: 0; left: 0; right: 0; height: 44px;
+      background: #4a8a2a; border-top: 4px solid #3a6a1a;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; letter-spacing: 5px;
+      pointer-events: none; z-index: 2;
     }
   </style>
 </head>
 <body>
 
-<a href="../../" id="home-btn" aria-label="Home">&#127968;</a>
+<header class="game-header">
+  <a href="../../" class="nav-btn" aria-label="Home">🏠</a>
+  <span class="game-title">🌾 Word Farm</span>
+  <button class="nav-btn" id="settings-btn" aria-label="Settings" onclick="showSetup()">⚙️</button>
+</header>
+
 <div id="celebrate"></div>
 <div id="tractor-wrap">🚜</div>
 
-<!-- ── Farm background ────────────────────────────────────────── -->
+<!-- ── Farm background ──────────────────────────────────────────── -->
 <div id="farm-bg">
   <div id="farm-sun"></div>
   <div id="cloud1" class="cloud"></div>
@@ -550,15 +421,11 @@
   </div>
 </div>
 
-<!-- ── Game area ──────────────────────────────────────────────── -->
+<!-- ── Game area ─────────────────────────────────────────────── -->
 <div id="game-area">
-  <div id="game-header">
-    <div id="title">🌾 Word Farm</div>
-    <div id="wheat-row"></div>
-    <button id="settings-btn" onclick="showSetup()" title="Settings">⚙️</button>
-  </div>
   <div class="card">
     <div id="progress"></div>
+    <div id="wheat-row"></div>
     <div id="emoji-display"></div>
     <button id="hear-btn" onclick="hearWord()">🔊 Hear the word</button>
     <div id="finger-section">
@@ -573,7 +440,7 @@
   </div>
 </div>
 
-<!-- ── Round end ──────────────────────────────────────────────── -->
+<!-- ── Round end ─────────────────────────────────────────────── -->
 <div id="round-end">
   <div class="card">
     <div class="round-end-title" id="round-end-title"></div>
@@ -589,14 +456,12 @@
 <div id="farm-strip">🌻🐄🌾🐑🚜🌾🐓🌼🐄🌾🚜🌻🐑🌾🐓🌼</div>
 
 <script>
-// ── Word list ─────────────────────────────────────────────────────────────
-// group = highest RWI Set 1 group required; special = needs special friends
-// Every emoji was chosen so a child says the target word, not another word.
+// ── Word list ───────────────────────────────────────────────────────────────
 const ALL_WORDS = [
   // Group 1: m a s d t
   { word:'sad', emoji:'😢', phonemes:['s','a','d'], group:1 },
   { word:'mad', emoji:'😡', phonemes:['m','a','d'], group:1 },
-  { word:'sat', emoji:'🪑', phonemes:['s','a','t'], group:1 }, // "sat on the chair"
+  { word:'sat', emoji:'🪑', phonemes:['s','a','t'], group:1 },
   { word:'dad', emoji:'👨‍👦', phonemes:['d','a','d'], group:1 },
   // Group 2: adds i n p g o
   { word:'ant', emoji:'🐜', phonemes:['a','n','t'], group:2 },
@@ -608,7 +473,7 @@ const ALL_WORDS = [
   { word:'map', emoji:'🗺️', phonemes:['m','a','p'], group:2 },
   { word:'nap', emoji:'😴', phonemes:['n','a','p'], group:2 },
   { word:'pin', emoji:'📌', phonemes:['p','i','n'], group:2 },
-  { word:'tap', emoji:'🚰', phonemes:['t','a','p'], group:2 }, // faucet/tap
+  { word:'tap', emoji:'🚰', phonemes:['t','a','p'], group:2 },
   { word:'pot', emoji:'🪴', phonemes:['p','o','t'], group:2 },
   // Group 3: adds c k u b f
   { word:'cat', emoji:'🐱', phonemes:['c','a','t'], group:3 },
@@ -619,15 +484,15 @@ const ALL_WORDS = [
   { word:'bin', emoji:'🗑️', phonemes:['b','i','n'], group:3 },
   { word:'sun', emoji:'☀️', phonemes:['s','u','n'], group:3 },
   { word:'cob', emoji:'🌽', phonemes:['c','o','b'], group:3 },
-  { word:'bud', emoji:'🌱', phonemes:['b','u','d'], group:3 }, // flower bud
+  { word:'bud', emoji:'🌱', phonemes:['b','u','d'], group:3 },
   { word:'fog', emoji:'🌫️', phonemes:['f','o','g'], group:3 },
-  { word:'fin', emoji:'🦈', phonemes:['f','i','n'], group:3 }, // shark fin
+  { word:'fin', emoji:'🦈', phonemes:['f','i','n'], group:3 },
   // Group 4: adds e l h r j
   { word:'hen', emoji:'🐔', phonemes:['h','e','n'], group:4 },
   { word:'bed', emoji:'🛏️', phonemes:['b','e','d'], group:4 },
   { word:'leg', emoji:'🦵', phonemes:['l','e','g'], group:4 },
-  { word:'jar', emoji:'🫙', phonemes:['j','a','r'], group:4 }, // clear jar
-  { word:'elf', emoji:'🧝', phonemes:['e','l','f'], group:4 },
+  { word:'jar', emoji:'🪹', phonemes:['j','a','r'], group:4 },
+  { word:'elf', emoji:'🧙', phonemes:['e','l','f'], group:4 },
   { word:'log', emoji:'🪵', phonemes:['l','o','g'], group:4 },
   { word:'hat', emoji:'🎩', phonemes:['h','a','t'], group:4 },
   { word:'gem', emoji:'💎', phonemes:['g','e','m'], group:4 },
@@ -658,14 +523,6 @@ const GROUPS = [
 
 const ROUND_SIZES = [3, 5, 8];
 
-const FARM_PRAISE = [
-  'Moooo! Well done!',
-  'Baaaa! Brilliant!',
-  'Oink oink! Amazing!',
-  'Cock a doodle doo! Fantastic!',
-  'Neigh! Great job!',
-];
-
 const DISTRACTOR_POOL = ['m','a','s','d','t','i','n','p','g','o','c','k','u','b','f','e','l','h','r','j','v','y','w','z','x'];
 
 // ── Settings ──────────────────────────────────────────────────────────────
@@ -682,17 +539,16 @@ function saveSettings() {
 }
 
 // ── Session / round state ─────────────────────────────────────────────────
-let sessionPool  = [];   // words not yet played this session
-let roundWords   = [];   // words in current round
+let sessionPool  = [];
+let roundWords   = [];
 let roundIndex   = 0;
-let roundResults = [];   // { word, emoji, tries }
-let sessionScore = 0;    // wheat earned this session
+let roundResults = [];
+let sessionScore = 0;
 
-// Word state
-let placed   = [];       // { phoneme, tileEl }
+let placed   = [];
 let tryCount = 0;
 
-// ── Available words ───────────────────────────────────────────────────────
+// ── Available words ─────────────────────────────────────────────────────────
 function getAvailableWords() {
   return ALL_WORDS.filter(w => {
     const groupOk   = settings.groups.includes(w.group);
@@ -701,27 +557,7 @@ function getAvailableWords() {
   });
 }
 
-// ── Phoneme sounds ────────────────────────────────────────────────────────
-const PHONEME_SOUNDS = {
-  'm':'muh','a':'ah','s':'suh','d':'duh','t':'tuh',
-  'i':'ih','n':'nuh','p':'puh','g':'guh','o':'oh',
-  'c':'kuh','k':'kuh','u':'uh','b':'buh','f':'fuh',
-  'e':'eh','l':'luh','h':'huh','r':'ruh','j':'juh',
-  'v':'vuh','y':'yuh','w':'wuh','z':'zuh','x':'ks',
-  'sh':'sh','ch':'ch','th':'th','ng':'ng',
-};
-function phonemeSound(ph) { return PHONEME_SOUNDS[ph] || ph; }
-
-// ── Audio playback ────────────────────────────────────────────────────────
-// Drop mp3 files into games/phonics/sounds/ (e.g. sounds/m.mp3, sounds/sh.mp3).
-// Falls back to speech synthesis if a file is missing.
-function playPhoneme(ph) {
-  const audio = new Audio(`sounds/${ph}.mp3`);
-  audio.onerror = () => speak(phonemeSound(ph), 0.88, 1.1);
-  audio.play().catch(() => speak(phonemeSound(ph), 0.88, 1.1));
-}
-
-// ── Speech ────────────────────────────────────────────────────────────────
+// ── Speech ────────────────────────────────────────────────────────────────────
 function speak(text, rate=0.88, pitch=1.1) {
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
@@ -729,10 +565,7 @@ function speak(text, rate=0.88, pitch=1.1) {
   speechSynthesis.speak(u);
 }
 function hearWord() { speak(roundWords[roundIndex].word, 0.82, 1.1); }
-
-function celebrationSpeech(word) {
-  speak(word, 0.78, 1.1);
-}
+function celebrationSpeech(word) { speak(word, 0.78, 1.1); }
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 function shuffle(arr) {
@@ -748,7 +581,7 @@ function getDistractors(phonemes) {
   return shuffle(DISTRACTOR_POOL.filter(p => !used.has(p))).slice(0, settings.groups[settings.groups.length-1] <= 1 ? 1 : 2);
 }
 
-// ── Screen management ─────────────────────────────────────────────────────
+// ── Screen management ───────────────────────────────────────────────────
 function showScreen(id) {
   ['setup-screen','game-area','round-end'].forEach(s => {
     const el = document.getElementById(s);
@@ -760,9 +593,8 @@ function showSetup() {
   renderSetup();
 }
 
-// ── Setup screen ──────────────────────────────────────────────────────────
+// ── Setup screen ──────────────────────────────────────────────────────
 function renderSetup() {
-  // Group rows
   const list = document.getElementById('group-list');
   list.innerHTML = '';
   list.style.cssText = 'width:100%;display:flex;flex-direction:column;gap:8px;';
@@ -779,13 +611,11 @@ function renderSetup() {
     list.appendChild(row);
   });
 
-  // Special friends
   const sfOn = settings.includeSpecial;
   const sfBtn = document.getElementById('toggle-sf');
   sfBtn.textContent = sfOn ? 'ON' : 'OFF';
   sfBtn.className   = 'toggle-btn' + (sfOn ? ' on' : '');
 
-  // Round size
   const picker = document.getElementById('size-picker');
   picker.innerHTML = '';
   ROUND_SIZES.forEach(n => {
@@ -801,11 +631,8 @@ function renderSetup() {
 
 function toggleGroup(id) {
   if (settings.groups.includes(id)) {
-    // Disable this group and all higher groups
     settings.groups = settings.groups.filter(g => g < id);
-    if (settings.groups.length === 0) settings.groups = []; // allow empty (play btn disabled)
   } else {
-    // Enable all groups up to and including this one
     for (let i = 1; i <= id; i++) {
       if (!settings.groups.includes(i)) settings.groups.push(i);
     }
@@ -835,7 +662,7 @@ function updateWordCount() {
   }
 }
 
-// ── Session / round ───────────────────────────────────────────────────────
+// ── Session / round ─────────────────────────────────────────────────────────
 function startSession() {
   sessionPool  = shuffle(getAvailableWords());
   sessionScore = 0;
@@ -844,7 +671,6 @@ function startSession() {
 }
 
 function startNewRound() {
-  // Refill pool if running low
   if (sessionPool.length < settings.roundSize) {
     sessionPool = [...sessionPool, ...shuffle(getAvailableWords())];
   }
@@ -857,7 +683,7 @@ function startNewRound() {
   renderWord();
 }
 
-// ── Render word ───────────────────────────────────────────────────────────
+// ── Render word ────────────────────────────────────────────────────────────
 function renderWord() {
   const w = roundWords[roundIndex];
   placed   = [];
@@ -870,7 +696,6 @@ function renderWord() {
 
   buildFingers(w.phonemes.length);
 
-  // Boxes
   const boxesEl = document.getElementById('boxes');
   boxesEl.innerHTML = '';
   w.phonemes.forEach((ph, i) => {
@@ -881,7 +706,6 @@ function renderWord() {
     boxesEl.appendChild(box);
   });
 
-  // Tiles
   const pool    = shuffle([...w.phonemes, ...getDistractors(w.phonemes)]);
   const tilesEl = document.getElementById('tiles');
   tilesEl.innerHTML = '';
@@ -894,7 +718,7 @@ function renderWord() {
   });
 }
 
-// ── Tile interaction ──────────────────────────────────────────────────────
+// ── Tile interaction ────────────────────────────────────────────────────────────
 function tapTile(tileEl, phoneme) {
   if (tileEl.classList.contains('used')) return;
   const w = roundWords[roundIndex];
@@ -902,7 +726,6 @@ function tapTile(tileEl, phoneme) {
 
   tileEl.classList.add('used');
   placed.push({ phoneme, tileEl });
-  playPhoneme(phoneme);
 
   const box = document.querySelector(`.box[data-idx="${placed.length-1}"]`);
   box.textContent = phoneme;
@@ -912,7 +735,6 @@ function tapTile(tileEl, phoneme) {
   if (placed.length === w.phonemes.length) setTimeout(checkAnswer, 430);
 }
 
-// Remove just the last placed letter (tap any filled box to backspace)
 function removeLastLetter() {
   if (!placed.length) return;
   const last = placed.pop();
@@ -924,7 +746,6 @@ function removeLastLetter() {
   pressFingers(placed.length);
 }
 
-// Clear everything (used internally after a wrong answer)
 function clearAll() {
   if (!placed.length) return;
   placed.forEach(p => p.tileEl.classList.remove('used'));
@@ -937,7 +758,7 @@ function clearAll() {
   resetFingers();
 }
 
-// ── Check answer ──────────────────────────────────────────────────────────
+// ── Check answer ─────────────────────────────────────────────────────────────
 function checkAnswer() {
   const w     = roundWords[roundIndex];
   const built = placed.map(p => p.phoneme).join('');
@@ -952,7 +773,6 @@ function checkAnswer() {
     updateWheat();
     launchConfetti();
     driveTractor();
-    // Fred talk animation then farm praise + word
     fredTalkAnimation(() => {
       celebrationSpeech(w.word);
       setTimeout(() => { document.getElementById('next-btn').style.display = 'block'; }, 1600);
@@ -968,7 +788,7 @@ function checkAnswer() {
   }
 }
 
-// ── Navigation ────────────────────────────────────────────────────────────
+// ── Navigation ──────────────────────────────────────────────────────────────────
 function nextWord() {
   roundIndex++;
   if (roundIndex >= roundWords.length) showRoundEnd();
@@ -981,7 +801,6 @@ function showRoundEnd() {
   const firstTryCount = roundResults.filter(r => r.tries === 1).length;
   const total         = roundResults.length;
 
-  // Title
   const titles = total === firstTryCount
     ? ['🌟 Perfect round!', '🏆 Amazing farmer!', '⭐ Superstar!']
     : firstTryCount >= Math.ceil(total/2)
@@ -989,7 +808,6 @@ function showRoundEnd() {
     : ['🌱 Good effort!', '🐄 Keep going!'];
   document.getElementById('round-end-title').textContent = titles[Math.floor(Math.random()*titles.length)];
 
-  // Results grid
   const grid = document.getElementById('result-grid');
   grid.innerHTML = '';
   roundResults.forEach(r => {
@@ -1003,18 +821,16 @@ function showRoundEnd() {
     grid.appendChild(row);
   });
 
-  // Score message
   document.getElementById('round-score-msg').textContent =
     `${firstTryCount} out of ${total} on the first try 🌾`;
 
-  // Speak a summary
   const msg = firstTryCount === total
     ? 'Perfect round! Every single word first time!'
     : `Well done! ${firstTryCount} out of ${total} on the first try!`;
   setTimeout(() => speak(msg, 0.88, 1.1), 400);
 }
 
-// ── Fred fingers ──────────────────────────────────────────────────────────
+// ── Fred fingers ─────────────────────────────────────────────────────────────────
 function buildFingers(count) {
   const row  = document.getElementById('finger-row');
   const palm = document.getElementById('finger-palm');
@@ -1027,37 +843,24 @@ function buildFingers(count) {
   palm.style.width = Math.max(60, count * 37 - 7) + 'px';
 }
 function pressFingers(n) {
-  document.querySelectorAll('.finger').forEach((f, i) => {
-    f.classList.toggle('pressed', i < n);
-  });
+  document.querySelectorAll('.finger').forEach((f, i) => { f.classList.toggle('pressed', i < n); });
 }
 function setFingersCorrect() {
-  document.querySelectorAll('.finger').forEach(f => {
-    f.classList.remove('pressed','wrong');
-    f.classList.add('correct');
-  });
+  document.querySelectorAll('.finger').forEach(f => { f.classList.remove('pressed','wrong'); f.classList.add('correct'); });
 }
 function setFingersWrong() {
-  document.querySelectorAll('.finger').forEach(f => {
-    f.classList.remove('pressed','correct');
-    f.classList.add('wrong');
-  });
+  document.querySelectorAll('.finger').forEach(f => { f.classList.remove('pressed','correct'); f.classList.add('wrong'); });
 }
 function resetFingers() {
-  document.querySelectorAll('.finger').forEach(f => {
-    f.classList.remove('pressed','correct','wrong');
-  });
+  document.querySelectorAll('.finger').forEach(f => { f.classList.remove('pressed','correct','wrong'); });
 }
 
-// Fred talk: pulse each box and speak its phoneme sound
 function fredTalkAnimation(onDone) {
   const boxes = [...document.querySelectorAll('.box')];
-  const phonemes = roundWords[roundIndex].phonemes;
   let i = 0;
   function pulse() {
     if (i >= boxes.length) { onDone(); return; }
     boxes[i].classList.add('fred-pulse');
-    playPhoneme(phonemes[i]);
     setTimeout(() => {
       boxes[i].classList.remove('fred-pulse');
       i++;
@@ -1067,12 +870,12 @@ function fredTalkAnimation(onDone) {
   setTimeout(pulse, 300);
 }
 
-// ── Score ─────────────────────────────────────────────────────────────────
+// ── Score ──────────────────────────────────────────────────────────────────────
 function updateWheat() {
   document.getElementById('wheat-row').textContent = '🌾'.repeat(sessionScore);
 }
 
-// ── Tractor ───────────────────────────────────────────────────────────────
+// ── Tractor ───────────────────────────────────────────────────────────────────
 function driveTractor() {
   const wrap = document.getElementById('tractor-wrap');
   wrap.classList.remove('go');
@@ -1081,7 +884,7 @@ function driveTractor() {
   setTimeout(() => wrap.classList.remove('go'), 5600);
 }
 
-// ── Confetti ──────────────────────────────────────────────────────────────
+// ── Confetti ─────────────────────────────────────────────────────────────────
 function launchConfetti() {
   const colors = ['#5aa33a','#ffd93d','#f5a623','#e05555','#ffffff','#a0d060','#ffe066'];
   const el     = document.getElementById('celebrate');
@@ -1100,9 +903,9 @@ function launchConfetti() {
   }
 }
 
-// ── Boot ──────────────────────────────────────────────────────────────────
+// ── Boot ──────────────────────────────────────────────────────────────────────
 loadSettings();
-startSession(); // go straight to the game; settings via ⚙️
+startSession();
 </script>
 </body>
 </html>
