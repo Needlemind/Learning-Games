@@ -3,18 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Dino Count!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     body {
-      font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', cursive;
+      font-family: 'Nunito', 'Comic Sans MS', cursive;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      padding: 20px 16px 36px;
+      padding: 76px 16px 36px;
       user-select: none;
       overflow: hidden;
       background: linear-gradient(to bottom,
@@ -22,7 +24,31 @@
         #4a9e3f 55%, #3a8030 70%, #2d6624 100%);
     }
 
-    /* Scenery */
+    /* ── Header ─────────────────────────────────────────────────── */
+    .game-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px;
+      background: rgba(0,0,0,0.2);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .game-title {
+      font-size: clamp(1.3rem, 5.5vw, 1.8rem);
+      font-weight: 900; color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .nav-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); border: none;
+      font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; color: inherit;
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .nav-btn:active { transform: scale(0.88); }
+
+    /* ── Scenery ─────────────────────────────────────────────────── */
     #scenery {
       position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
     }
@@ -61,23 +87,9 @@
     #palm1 { right: 5%; }
     #palm2 { right: 16%; font-size: 2.2rem; }
 
-    #home-btn {
-      position: fixed; top: 14px; left: 16px;
-      background: rgba(255,255,255,0.9); border: none; border-radius: 50%;
-      width: 46px; height: 46px; font-size: 22px; cursor: pointer; z-index: 20;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15); text-decoration: none;
-    }
-
-    #title {
-      font-size: clamp(1.8rem, 7vw, 2.8rem);
-      color: #fff;
-      text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
-      position: relative; z-index: 1;
-    }
-
     #question {
       font-size: clamp(1.1rem, 4.5vw, 1.6rem);
+      font-weight: 800;
       color: #fff;
       text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
       position: relative; z-index: 1;
@@ -104,7 +116,6 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.25);
       border: 4px solid rgba(255,255,255,0.5);
       animation: dino-bob 2.2s ease-in-out infinite;
-      transition: transform 0.1s;
     }
     .dino-card:nth-child(2) { animation-delay: 0.3s; }
     .dino-card:nth-child(3) { animation-delay: 0.6s; }
@@ -117,6 +128,7 @@
 
     #message {
       font-size: clamp(1.2rem, 5vw, 1.8rem);
+      font-weight: 800;
       color: #fff;
       text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
       min-height: 2rem;
@@ -138,41 +150,44 @@
       border: 4px solid rgba(0,0,0,0.15);
       font-family: inherit;
       font-size: clamp(1.6rem, 7vw, 2.4rem);
-      font-weight: bold;
+      font-weight: 900;
       color: #fff;
       cursor: pointer;
       text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
       box-shadow: 0 6px 0 rgba(0,0,0,0.2), 0 8px 16px rgba(0,0,0,0.15);
-      transition: transform 0.1s, box-shadow 0.1s;
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.1s;
     }
-    .num-btn:active  { transform: translateY(5px); box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
+    .num-btn:active  { transform: translateY(5px) scale(0.95); box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
     .num-btn.wrong   { animation: shake 0.4s ease; }
     .num-btn.correct { animation: pop 0.3s ease; }
 
     @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-9px)} 40%{transform:translateX(9px)} 60%{transform:translateX(-9px)} 80%{transform:translateX(9px)} }
     @keyframes pop   { 0%{transform:scale(1)} 50%{transform:scale(1.25)} 100%{transform:scale(1)} }
 
-    /* Celebration */
+    /* ── Celebration ─────────────────────────────────────────────── */
     #celebration {
       position: fixed; inset: 0;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      background: rgba(0,0,0,0.55);
-      z-index: 10; opacity: 0; pointer-events: none;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 20; opacity: 0; pointer-events: none;
       transition: opacity 0.3s;
       gap: 12px;
     }
     #celebration.show { opacity: 1; pointer-events: all; }
     #cel-emoji  { font-size: clamp(80px, 24vw, 130px); animation: bounce 0.5s ease infinite alternate; }
-    #cel-text   { font-size: clamp(2rem, 8vw, 3.2rem); font-weight: bold; color: #fff; text-shadow: 3px 3px 0 rgba(0,0,0,0.3); text-align: center; padding: 0 16px; }
+    #cel-text   { font-size: clamp(2rem, 8vw, 3.2rem); font-weight: 900; color: #fff; text-shadow: 3px 3px 0 rgba(0,0,0,0.3); text-align: center; padding: 0 16px; }
     #next-btn {
       margin-top: 8px; padding: 16px 48px;
-      font-size: clamp(1.2rem, 5vw, 1.6rem); font-family: inherit; font-weight: bold;
+      font-size: clamp(1.2rem, 5vw, 1.6rem); font-family: inherit; font-weight: 900;
       background: linear-gradient(145deg, #ff69b4, #c44d90);
       border: 3px solid #8b2060; border-radius: 50px; color: #fff; cursor: pointer;
-      box-shadow: 0 5px 14px rgba(0,0,0,0.3); transition: transform 0.1s;
+      box-shadow: 0 5px 14px rgba(0,0,0,0.3);
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
     }
-    #next-btn:active { transform: scale(0.95); }
+    #next-btn:active { transform: scale(0.93); }
     @keyframes bounce { from{transform:translateY(0) scale(1)} to{transform:translateY(-18px) scale(1.1)} }
 
     .confetti-piece { position:fixed; animation:fall linear forwards; pointer-events:none; }
@@ -180,6 +195,12 @@
   </style>
 </head>
 <body>
+
+<header class="game-header">
+  <a href="../../" class="nav-btn" aria-label="Home">🏠</a>
+  <span class="game-title">🦕 Dino Count!</span>
+  <button class="nav-btn" id="speaker-btn" aria-label="Repeat">🔊</button>
+</header>
 
 <div id="scenery">
   <div id="cloud1" class="cloud"></div>
@@ -189,9 +210,6 @@
   <span class="palm" id="palm2">🌴</span>
 </div>
 
-<a href="../../" id="home-btn" aria-label="Home">&#127968;</a>
-
-<div id="title">🦕 Dino Count!</div>
 <div id="question">How many dinosaurs?</div>
 <div id="dino-area"></div>
 <div id="message"></div>
@@ -205,14 +223,8 @@
 
 <script>
 const DINO_COLORS = [
-  '#FF69B4', // hot pink
-  '#9B59B6', // purple
-  '#E67E22', // orange
-  '#1ABC9C', // teal
-  '#3498DB', // blue
-  '#E74C3C', // red
-  '#F1C40F', // yellow
-  '#2ECC71', // green
+  '#FF69B4', '#9B59B6', '#E67E22', '#1ABC9C',
+  '#3498DB', '#E74C3C', '#F1C40F', '#2ECC71',
 ];
 
 const DINO_EMOJIS = ['🦕', '🦖'];
@@ -328,6 +340,7 @@ function launchConfetti() {
 }
 
 document.getElementById('next-btn').addEventListener('click', newRound);
+document.getElementById('speaker-btn').addEventListener('click', () => speak('How many dinosaurs can you count?'));
 newRound();
 </script>
 </body>

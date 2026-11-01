@@ -3,17 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <title>Number Race!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     body {
-      font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', cursive;
+      font-family: 'Nunito', 'Comic Sans MS', cursive;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 16px 12px 28px;
+      padding: 80px 12px 28px;
       user-select: none;
       gap: 14px;
       overflow: hidden;
@@ -23,28 +25,29 @@
         #6a8a3a 54%, #4a6a2a 100%);
     }
 
-    #home-btn {
-      position: fixed; top: 14px; left: 16px;
-      background: rgba(255,255,255,0.92); border: none; border-radius: 50%;
-      width: 46px; height: 46px; font-size: 22px; cursor: pointer; z-index: 20;
+    /* ── Header ─────────────────────────────────────────────────── */
+    .game-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px;
+      background: rgba(0,0,0,0.2);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .game-title {
+      font-size: clamp(1.3rem, 5.5vw, 1.8rem);
+      font-weight: 900; color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .nav-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); border: none;
+      font-size: 20px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15); text-decoration: none;
+      text-decoration: none; color: inherit;
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
     }
-    #settings-btn {
-      position: fixed; top: 14px; right: 16px;
-      background: rgba(255,255,255,0.92); border: none; border-radius: 50%;
-      width: 46px; height: 46px; font-size: 22px; cursor: pointer; z-index: 20;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    }
-
-    #title {
-      font-size: clamp(1.6rem, 6vw, 2.4rem);
-      color: #fff;
-      text-shadow: 3px 3px 0 rgba(0,0,0,0.22);
-      margin-top: 8px;
-      position: relative; z-index: 1;
-    }
+    .nav-btn:active { transform: scale(0.88); }
 
     /* ── Race track ─────────────────────────────────────────────── */
     #track-wrap {
@@ -62,7 +65,6 @@
       position: relative;
     }
 
-    /* Chequered finish line */
     #finish-line {
       position: absolute; top: 0; right: 0; bottom: 0;
       width: 30px;
@@ -71,7 +73,6 @@
       border-left: 3px solid #222;
     }
 
-    /* Start line */
     #start-line {
       position: absolute; top: 0; left: 44px; bottom: 0;
       width: 3px; background: rgba(255,255,255,0.45); z-index: 4;
@@ -90,7 +91,7 @@
     .lane-tag {
       position: absolute; right: 38px; top: 50%;
       transform: translateY(-50%);
-      font-size: 0.7rem; font-weight: bold;
+      font-size: 0.7rem; font-weight: 800;
       color: rgba(255,255,255,0.35); letter-spacing: 1px;
       z-index: 3;
     }
@@ -120,13 +121,14 @@
 
     #question-text {
       font-size: clamp(2.2rem, 10vw, 3.8rem);
-      font-weight: bold; color: #2c3e50;
+      font-weight: 900; color: #2c3e50;
       letter-spacing: 2px;
     }
 
     #message {
       font-size: clamp(1rem, 4vw, 1.3rem);
-      color: #e74c3c; font-weight: bold;
+      font-weight: 800;
+      color: #e74c3c;
       min-height: 1.5rem; text-align: center;
     }
 
@@ -134,11 +136,11 @@
       background: linear-gradient(145deg, #ffe066, #f5c518);
       border: 3px solid #a07800; border-radius: 50px;
       padding: 8px 22px; font-size: 1.05rem;
-      font-family: inherit; font-weight: bold; color: #5c3a00;
+      font-family: inherit; font-weight: 800; color: #5c3a00;
       cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.12);
-      transition: transform 0.1s;
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
     }
-    #hear-btn:active { transform: scale(0.94); }
+    #hear-btn:active { transform: scale(0.93); }
 
     #answer-row {
       display: flex; gap: 10px;
@@ -153,12 +155,12 @@
       border: 4px solid rgba(0,0,0,0.15);
       font-family: inherit;
       font-size: clamp(1.5rem, 6vw, 2.2rem);
-      font-weight: bold; color: #fff; cursor: pointer;
+      font-weight: 900; color: #fff; cursor: pointer;
       text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
       box-shadow: 0 6px 0 rgba(0,0,0,0.22), 0 8px 16px rgba(0,0,0,0.12);
-      transition: transform 0.1s, box-shadow 0.1s;
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.1s;
     }
-    .ans-btn:active { transform: translateY(5px); box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
+    .ans-btn:active { transform: translateY(5px) scale(0.95); box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
     .ans-btn.wrong  { animation: shake 0.4s ease; }
     .ans-btn.right  { animation: pop 0.3s ease; }
 
@@ -170,27 +172,32 @@
       position: fixed; inset: 0;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       z-index: 30; opacity: 0; pointer-events: none;
       transition: opacity 0.3s; gap: 14px;
     }
     #win-screen.show { opacity: 1; pointer-events: all; }
     #win-trophy { font-size: clamp(80px, 24vw, 130px); animation: bounce 0.5s ease infinite alternate; }
-    #win-text   { font-size: clamp(1.8rem, 7vw, 3rem); font-weight: bold; color: #fff; text-shadow: 3px 3px 0 rgba(0,0,0,0.3); text-align: center; padding: 0 20px; }
+    #win-text   { font-size: clamp(1.8rem, 7vw, 3rem); font-weight: 900; color: #fff; text-shadow: 3px 3px 0 rgba(0,0,0,0.3); text-align: center; padding: 0 20px; }
     #race-again-btn {
       margin-top: 8px; padding: 16px 44px;
-      font-size: clamp(1.2rem, 5vw, 1.6rem); font-family: inherit; font-weight: bold;
+      font-size: clamp(1.2rem, 5vw, 1.6rem); font-family: inherit; font-weight: 900;
       background: linear-gradient(145deg, #e74c3c, #c0392b);
       border: 3px solid #922b21; border-radius: 50px; color: #fff; cursor: pointer;
-      box-shadow: 0 5px 14px rgba(0,0,0,0.3); transition: transform 0.1s;
+      box-shadow: 0 5px 14px rgba(0,0,0,0.3);
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
     }
-    #race-again-btn:active { transform: scale(0.95); }
+    #race-again-btn:active { transform: scale(0.93); }
     @keyframes bounce { from{transform:scale(1) translateY(0)} to{transform:scale(1.1) translateY(-16px)} }
 
     /* ── Settings panel ─────────────────────────────────────────── */
     #settings-panel {
       position: fixed; inset: 0;
       background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       z-index: 25; display: none;
       align-items: center; justify-content: center;
     }
@@ -200,18 +207,18 @@
       padding: 28px 24px; width: min(380px, 90vw);
       display: flex; flex-direction: column; gap: 16px;
     }
-    .settings-title { font-size: 1.5rem; font-weight: bold; color: #2c3e50; text-align: center; }
+    .settings-title { font-size: 1.5rem; font-weight: 900; color: #2c3e50; text-align: center; }
     .settings-row {
       display: flex; align-items: center; justify-content: space-between;
       background: #f8f9fa; border-radius: 12px; padding: 12px 16px;
     }
-    .settings-label { font-size: 1rem; color: #2c3e50; font-weight: bold; }
+    .settings-label { font-size: 1rem; color: #2c3e50; font-weight: 800; }
     .settings-sub   { font-size: 0.8rem; color: #7f8c8d; }
     .toggle-btn {
       padding: 8px 20px; border-radius: 50px;
       border: 3px solid #aaa; background: #ddd;
       font-family: inherit; font-size: 0.95rem;
-      font-weight: bold; color: #666; cursor: pointer;
+      font-weight: 800; color: #666; cursor: pointer;
       transition: background 0.2s, border-color 0.2s, color 0.2s;
     }
     .toggle-btn.on { background: linear-gradient(145deg,#4cbf4c,#2a8a2a); border-color: #1a5a1a; color: #fff; }
@@ -220,15 +227,17 @@
       padding: 8px 12px; border-radius: 12px;
       border: 3px solid #aaa; background: #eee;
       font-family: inherit; font-size: 0.9rem;
-      font-weight: bold; color: #666; cursor: pointer;
+      font-weight: 800; color: #666; cursor: pointer;
       transition: all 0.2s;
     }
     .range-btn.active { background: linear-gradient(145deg,#f5c518,#e08000); border-color: #8B5500; color: #fff; }
     .close-settings-btn {
       padding: 14px; border-radius: 50px; border: none;
       background: #e74c3c; font-family: inherit;
-      font-size: 1.1rem; font-weight: bold; color: #fff; cursor: pointer;
+      font-size: 1.1rem; font-weight: 900; color: #fff; cursor: pointer;
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
     }
+    .close-settings-btn:active { transform: scale(0.93); }
 
     .confetti-piece { position:fixed; animation:fall linear forwards; pointer-events:none; }
     @keyframes fall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
@@ -236,10 +245,11 @@
 </head>
 <body>
 
-<a href="../../" id="home-btn" aria-label="Home">&#127968;</a>
-<button id="settings-btn">⚙️</button>
-
-<div id="title">🏎️ Number Race!</div>
+<header class="game-header">
+  <a href="../../" class="nav-btn" aria-label="Home">🏠</a>
+  <span class="game-title">🏎️ Number Race!</span>
+  <button class="nav-btn" id="settings-btn" aria-label="Settings">⚙️</button>
+</header>
 
 <div id="track-wrap">
   <div id="track">
@@ -329,11 +339,10 @@ const CAR_DEFS = [
 
 const ANS_COLORS = ['#E74C3C', '#3498DB', '#2ECC71', '#F39C12'];
 
-// Track: cars move between CAR_START% and CAR_END% of the lane width
 const CAR_START = 5;
 const CAR_END   = 85;
 
-let carProgress = {}; // 0–100 per car id
+let carProgress = {};
 
 function carLeftPct(progress) {
   return CAR_START + (progress / 100) * (CAR_END - CAR_START);
@@ -407,20 +416,17 @@ function generateQuestion() {
   const useSub = settings.subtraction && Math.random() < 0.4;
 
   if (useSub) {
-    // a - b = answer, all values within range
-    answer = Math.floor(Math.random() * (max - 1)) + 1; // 1..max-1
-    b = Math.floor(Math.random() * (max - answer)) + 1; // 1..max-answer
+    answer = Math.floor(Math.random() * (max - 1)) + 1;
+    b = Math.floor(Math.random() * (max - answer)) + 1;
     a = answer + b;
     text = `${a} − ${b} = ?`;
   } else {
-    // a + b ≤ max
-    a = Math.floor(Math.random() * (max - 1)) + 1;      // 1..max-1
-    b = Math.floor(Math.random() * (max - a)) + 1;      // 1..max-a
+    a = Math.floor(Math.random() * (max - 1)) + 1;
+    b = Math.floor(Math.random() * (max - a)) + 1;
     answer = a + b;
     text = `${a} + ${b} = ?`;
   }
 
-  // 4 distinct options within 1..max
   const opts = new Set([answer]);
   let attempts = 0;
   while (opts.size < 4 && attempts < 100) {
@@ -428,7 +434,6 @@ function generateQuestion() {
     const c = Math.floor(Math.random() * max) + 1;
     if (c !== answer) opts.add(c);
   }
-  // Fallback: fill sequentially
   for (let n = 1; opts.size < 4; n++) { if (!opts.has(n)) opts.add(n); }
 
   return { answer, text, options: shuffle([...opts].slice(0, 4)) };
@@ -459,7 +464,6 @@ function onAnswer(val, btn) {
     blocked = true;
     btn.classList.add('right');
 
-    // Player moves most; AI cars move less and are capped below 100%
     moveCar('player', 22);
     moveCar('ai1', Math.floor(Math.random() * 8) + 4, 88);
     moveCar('ai2', Math.floor(Math.random() * 7) + 3, 82);
@@ -481,7 +485,6 @@ function onAnswer(val, btn) {
     btn.classList.add('wrong');
     btn.addEventListener('animationend', () => btn.classList.remove('wrong'), { once: true });
 
-    // AI cars creep forward even on wrong answer — pressure!
     moveCar('ai1', Math.floor(Math.random() * 4) + 1, 88);
     moveCar('ai2', Math.floor(Math.random() * 3) + 1, 82);
 
