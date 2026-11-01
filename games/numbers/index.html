@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Fruit Numbers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Nunito', 'Helvetica Neue', Arial, sans-serif;
+      background: #fffde7;
+      height: 100svh;
+      display: flex; flex-direction: column; align-items: center;
+      overflow: hidden; user-select: none; touch-action: manipulation;
+    }
+    .game-header {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; flex-shrink: 0;
+    }
+    .nav-btn {
+      background: rgba(0,0,0,0.06); border: none; border-radius: 50%;
+      width: 44px; height: 44px; font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; flex-shrink: 0;
+    }
+    .nav-btn:active { background: rgba(0,0,0,0.13); transform: scale(0.9); }
+    .game-title { font-size: clamp(17px,4.5vw,22px); font-weight: 800; color: #3a3848; }
+    #prompt-area { padding: 4px 20px 8px; text-align: center; flex-shrink: 0; }
+    #tap-label { font-size: clamp(19px,5.5vw,30px); color: #888; font-weight: 700; }
+    #number-name {
+      font-size: clamp(46px,min(15vw,12svh),92px); font-weight: 900; line-height: 1.1;
+      text-shadow: 3px 4px 0 rgba(0,0,0,0.08);
+    }
+    #number-name.pulse { animation: pulse 0.4s ease; }
+    @keyframes pulse { 0%{transform:scale(1)} 40%{transform:scale(1.1)} 100%{transform:scale(1)} }
+    #hint { font-size: clamp(17px,4.5vw,26px); color: #888; font-weight: 700; margin-top: 2px; }
+    #grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: clamp(14px,3.5vw,28px);
+      padding: 0 clamp(16px,4vw,32px) clamp(16px,4vw,28px);
+      width: 100%; max-width: 520px; flex: 1; min-height: 0; align-content: center;
+    }
+    .number-btn {
+      border: none; border-radius: clamp(18px,5vw,32px); aspect-ratio: 1; cursor: pointer;
+      max-height: calc((100svh - 220px) / 2);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2), 0 2px 6px rgba(0,0,0,0.1);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.12s;
+    }
+    .number-btn:active { transform: scale(0.91) !important; box-shadow: 0 3px 10px rgba(0,0,0,0.12); }
+    .number-btn.wrong-shake { animation: shake 0.4s ease; }
+    @keyframes shake {
+      0%,100%{transform:translateX(0)} 20%{transform:translateX(-10px)}
+      40%{transform:translateX(10px)} 60%{transform:translateX(-8px)} 80%{transform:translateX(8px)}
+    }
+    .number-glyph {
+      font-size: clamp(42px,12vw,78px); font-weight: 900; color: white; line-height: 1;
+      text-shadow: 2px 3px 0 rgba(0,0,0,0.15);
+    }
+    .number-emoji { font-size: clamp(20px,5.5vw,30px); line-height: 1; }
+    #celebration {
+      position: fixed; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: rgba(255,253,231,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      z-index: 10; opacity: 0; pointer-events: none; transition: opacity 0.22s;
+    }
+    #celebration.show { opacity: 1; pointer-events: all; }
+    #celebration .cel-emoji { font-size: clamp(80px,22vw,130px); animation: bounce 0.5s ease infinite alternate; }
+    @keyframes bounce { from{transform:translateY(0) scale(1)} to{transform:translateY(-20px) scale(1.08)} }
+    #celebration .well-done { font-size: clamp(30px,9vw,58px); font-weight: 900; color: #2a2840; margin-top: 16px; }
+    .confetti-piece { position: fixed; animation: fall linear forwards; pointer-events: none; }
+    @keyframes fall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0.2} }
+    #next-btn {
+      margin-top: 24px; font-family: 'Nunito',sans-serif;
+      font-size: clamp(19px,5.5vw,30px); font-weight: 900;
+      padding: 16px 48px; border-radius: 999px; border: none;
+      background: #f4721b; color: white; cursor: pointer;
+      box-shadow: 0 8px 20px rgba(244,114,27,0.4);
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    #next-btn:active { transform: scale(0.94); }
+  </style>
+</head>
+<body>
+  <header class="game-header">
+    <a href="../../" class="nav-btn" aria-label="Home">&#127968;</a>
+    <span class="game-title">&#127822; Fruit Numbers</span>
+    <button class="nav-btn" id="speaker-btn" aria-label="Repeat">&#128266;</button>
+  </header>
+  <div id="prompt-area">
+    <div id="tap-label">Tap the number</div>
+    <div id="number-name"></div>
+    <div id="hint"></div>
+  </div>
+  <div id="grid"></div>
+  <div id="celebration">
+    <div class="cel-emoji"></div>
+    <div class="well-done"></div>
+    <button id="next-btn">Next &#9654;</button>
+  </div>
+  <script>
+    const NUMBERS = [
+      { name:'One',   num:1,  color:'#e63946', emoji:'🍎', fruit:'Apple' },
+      { name:'Two',   num:2,  color:'#e6a817', emoji:'🍌', fruit:'Banana' },
+      { name:'Three', num:3,  color:'#7b2d8b', emoji:'🍇', fruit:'Grapes' },
+      { name:'Four',  num:4,  color:'#f4721b', emoji:'🍊', fruit:'Orange' },
+      { name:'Five',  num:5,  color:'#e84393', emoji:'🍓', fruit:'Strawberry' },
+      { name:'Six',   num:6,  color:'#1a73e8', emoji:'🫐', fruit:'Blueberry' },
+      { name:'Seven', num:7,  color:'#c8a800', emoji:'🍋', fruit:'Lemon' },
+      { name:'Eight', num:8,  color:'#ff6e40', emoji:'🍑', fruit:'Peach' },
+      { name:'Nine',  num:9,  color:'#2e9c4b', emoji:'🍍', fruit:'Pineapple' },
+      { name:'Ten',   num:10, color:'#388e3c', emoji:'🍉', fruit:'Watermelon' },
+    ];
+    const CELEBRATIONS = ['Well done!','Amazing!','You got it!','Brilliant!','Hooray!'];
+    let target = null, blocked = false;
+
+    const nameEl  = document.getElementById('number-name');
+    const hintEl  = document.getElementById('hint');
+    const gridEl  = document.getElementById('grid');
+    const celebEl = document.getElementById('celebration');
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length-1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+      }
+      return a;
+    }
+
+    function speak(text) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate = 0.85; u.pitch = 1.2; u.lang = 'en-GB';
+      window.speechSynthesis.speak(u);
+    }
+
+    function newRound() {
+      blocked = false;
+      celebEl.classList.remove('show');
+      document.querySelectorAll('.confetti-piece').forEach(el => el.remove());
+
+      const pool = shuffle(NUMBERS).slice(0, 4);
+      target = pool[Math.floor(Math.random() * pool.length)];
+
+      nameEl.textContent = target.name;
+      nameEl.style.color = target.color;
+      hintEl.textContent = target.emoji + ' ' + target.fruit;
+
+      gridEl.innerHTML = '';
+      pool.forEach(n => {
+        const btn = document.createElement('button');
+        btn.className = 'number-btn';
+        btn.setAttribute('aria-label', n.name);
+        btn.style.background = n.color;
+        btn.innerHTML = `<span class="number-glyph">${n.num}</span><span class="number-emoji">${n.emoji}</span>`;
+        btn.addEventListener('click', () => onTap(n, btn));
+        gridEl.appendChild(btn);
+      });
+
+      nameEl.classList.remove('pulse'); void nameEl.offsetWidth; nameEl.classList.add('pulse');
+      setTimeout(() => speak('Tap the number ' + target.name), 300);
+    }
+
+    function onTap(n, btn) {
+      if (blocked) return;
+      if (n.num === target.num) {
+        blocked = true;
+        const msg = CELEBRATIONS[Math.floor(Math.random() * CELEBRATIONS.length)];
+        celebEl.querySelector('.cel-emoji').textContent = target.emoji;
+        celebEl.querySelector('.well-done').textContent = msg;
+        celebEl.classList.add('show');
+        speak(msg);
+        launchConfetti();
+      } else {
+        btn.classList.remove('wrong-shake'); void btn.offsetWidth; btn.classList.add('wrong-shake');
+        speak('Try again! Tap the number ' + target.name);
+      }
+    }
+
+    function launchConfetti() {
+      const colors = NUMBERS.map(n => n.color);
+      for (let i = 0; i < 60; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.cssText = `left:${Math.random()*100}vw;top:-20px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:${Math.random()>.5?'50%':'3px'};width:${8+Math.random()*10}px;height:${8+Math.random()*10}px;animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*0.6}s`;
+        document.body.appendChild(el);
+        el.addEventListener('animationend', () => el.remove());
+      }
+    }
+
+    document.getElementById('next-btn').addEventListener('click', newRound);
+    document.getElementById('speaker-btn').addEventListener('click', () => {
+      if (target) speak('Tap the number ' + target.name);
+    });
+
+    newRound();
+  </script>
+</body>
+</html>
