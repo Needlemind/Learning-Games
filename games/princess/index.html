@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Dress the Princess!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Nunito', 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(160deg, #fce4ec 0%, #f8bbd0 60%, #fce4ec 100%);
+      height: 100svh;
+      display: flex; flex-direction: column; align-items: center;
+      overflow: hidden; user-select: none; touch-action: manipulation;
+    }
+    .game-header {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px; flex-shrink: 0;
+    }
+    .nav-btn {
+      background: rgba(255,255,255,0.45); border: none; border-radius: 50%;
+      width: 44px; height: 44px; font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; flex-shrink: 0;
+    }
+    .nav-btn:active { background: rgba(255,255,255,0.7); transform: scale(0.9); }
+    .game-title {
+      font-size: clamp(16px,4.5vw,22px); font-weight: 900; color: #c2185b;
+      text-shadow: 0 1px 4px rgba(255,255,255,0.7);
+    }
+
+    /* Princess */
+    #princess-area {
+      flex-shrink: 0;
+      height: clamp(220px, 50svh, 360px);
+      display: flex; align-items: center; justify-content: center;
+    }
+    #princess-svg {
+      height: 100%; width: auto; overflow: visible;
+      filter: drop-shadow(0 8px 22px rgba(194,24,91,0.18));
+    }
+    /* Item layers hidden by default; .show triggers the pop-in */
+    .item-layer {
+      opacity: 0;
+      transform-box: fill-box; transform-origin: center;
+    }
+    .item-layer.show {
+      animation: item-pop 0.55s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+    @keyframes item-pop {
+      0%   { opacity: 0; transform: scale(0.1) rotate(-20deg); }
+      60%  { opacity: 1; transform: scale(1.2) rotate(6deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+    /* Princess bounces when all done */
+    #princess-svg.celebrate {
+      animation: princess-bounce 0.48s ease infinite alternate;
+    }
+    @keyframes princess-bounce {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-14px) scale(1.03); }
+    }
+
+    /* Item buttons */
+    #items-area {
+      flex: 1; min-height: 0; width: 100%; max-width: 480px;
+      display: flex; flex-direction: column;
+      padding: clamp(8px,2svh,16px) clamp(14px,4vw,24px) clamp(8px,1.5svh,14px);
+      gap: clamp(6px,1.2svh,10px);
+    }
+    #items-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: clamp(8px,2vw,16px);
+      flex: 1; min-height: 0; align-content: center;
+    }
+    .item-btn {
+      border: none; border-radius: clamp(18px,5vw,28px);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: clamp(3px,0.8svh,7px); cursor: pointer; padding: 8px 4px;
+      max-height: clamp(72px,19svh,130px);
+      background: linear-gradient(145deg, #f06292, #e91e63);
+      box-shadow: 0 7px 20px rgba(233,30,99,0.38), 0 2px 6px rgba(233,30,99,0.2);
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.15s;
+      position: relative; overflow: hidden;
+    }
+    .item-btn:active { transform: scale(0.90) !important; }
+    .item-btn.done {
+      background: linear-gradient(145deg, #f8bbd0, #f48fb1);
+      box-shadow: 0 4px 10px rgba(244,143,177,0.25);
+      pointer-events: none;
+    }
+    .item-icon  { font-size: clamp(30px,8.5vw,50px); line-height: 1; }
+    .item-label {
+      font-size: clamp(13px,3.5vw,18px); font-weight: 900; color: white;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.18); line-height: 1;
+    }
+    .done-tick {
+      position: absolute; top: 5px; right: 9px;
+      font-size: clamp(16px,4.5vw,24px); color: white;
+      opacity: 0; transition: opacity 0.25s; font-weight: 900;
+    }
+    .item-btn.done .done-tick { opacity: 1; }
+
+    /* Floating sparkle particles */
+    .spark { position: fixed; border-radius: 50%; pointer-events: none; z-index: 15; }
+
+    /* Win overlay */
+    #win-screen {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(252,228,236,0.95); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      z-index: 20; opacity: 0; pointer-events: none; transition: opacity 0.4s;
+    }
+    #win-screen.show { opacity: 1; pointer-events: all; }
+    .win-emoji { font-size: clamp(72px,20vw,115px); animation: big-bounce 0.5s ease infinite alternate; }
+    @keyframes big-bounce { from{transform:scale(1)} to{transform:scale(1.15) translateY(-12px)} }
+    .win-text { font-size: clamp(36px,10vw,64px); font-weight: 900; color: #c2185b; margin-top: 10px;
+      text-shadow: 0 2px 10px rgba(255,255,255,0.8); }
+    .win-sub  { font-size: clamp(18px,5vw,28px); font-weight: 700; color: #e91e63; margin-top: 4px; }
+    #again-btn {
+      margin-top: 28px; font-family: 'Nunito', sans-serif;
+      font-size: clamp(18px,5.5vw,28px); font-weight: 900;
+      padding: 15px 46px; border-radius: 999px; border: none;
+      background: linear-gradient(135deg, #f06292, #e91e63);
+      color: white; cursor: pointer;
+      box-shadow: 0 8px 22px rgba(233,30,99,0.42);
+      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    #again-btn:active { transform: scale(0.94); }
+    .confetti-piece { position: fixed; animation: fall linear forwards; pointer-events: none; z-index: 19; }
+    @keyframes fall { 0%{opacity:1;transform:translateY(-20px) rotate(0deg)} 100%{opacity:0.15;transform:translateY(110vh) rotate(720deg)} }
+  </style>
+</head>
+<body>
+  <header class="game-header">
+    <a href="../../" class="nav-btn" aria-label="Home">&#127968;</a>
+    <span class="game-title">&#128144; Dress the Princess!</span>
+    <div style="width:44px"></div>
+  </header>
+
+  <div id="princess-area">
+    <!-- viewBox 200×320  —  front = up  -->
+    <svg id="princess-svg" viewBox="0 0 200 320" xmlns="http://www.w3.org/2000/svg">
+
+      <!-- ═══ STATIC PRINCESS ═══ -->
+
+      <!-- Hair behind head -->
+      <ellipse cx="100" cy="92" rx="53" ry="65" fill="#FFD54F"/>
+      <ellipse cx="50"  cy="140" rx="19" ry="54" fill="#FFCA28"/>
+      <ellipse cx="150" cy="140" rx="19" ry="54" fill="#FFCA28"/>
+
+      <!-- Skirt layers (back to front) -->
+      <path d="M65,178 Q44,272 20,316 L180,316 Q156,272 135,178 Z" fill="#FCE4EC"/>
+      <path d="M68,178 Q50,268 33,316 L167,316 Q150,268 132,178 Z" fill="#F8BBD0"/>
+      <path d="M73,180 Q60,264 48,316 L152,316 Q140,264 127,180 Z" fill="#F48FB1"/>
+      <!-- Skirt sparkle stars -->
+      <text x="68"  y="237" font-size="13" fill="#E91E63" opacity="0.55">&#10022;</text>
+      <text x="112" y="272" font-size="11" fill="#E91E63" opacity="0.45">&#10022;</text>
+      <text x="86"  y="304" font-size="9"  fill="#E91E63" opacity="0.35">&#10022;</text>
+      <text x="125" y="240" font-size="9"  fill="#E91E63" opacity="0.35">&#10022;</text>
+
+      <!-- Bodice -->
+      <rect x="72" y="150" width="56" height="33" rx="9" fill="#E91E63"/>
+      <circle cx="100" cy="161" r="3.5" fill="white" opacity="0.5"/>
+      <circle cx="91"  cy="168" r="2.5" fill="white" opacity="0.38"/>
+      <circle cx="109" cy="168" r="2.5" fill="white" opacity="0.38"/>
+
+      <!-- Arms -->
+      <ellipse cx="57"  cy="170" rx="13" ry="25" fill="#FFCCBC" transform="rotate(-18,57,170)"/>
+      <ellipse cx="143" cy="170" rx="13" ry="25" fill="#FFCCBC" transform="rotate(18,143,170)"/>
+      <ellipse cx="49"  cy="189" rx="9"  ry="8"  fill="#FFCCBC"/>
+      <ellipse cx="151" cy="189" rx="9"  ry="8"  fill="#FFCCBC"/>
+
+      <!-- Head -->
+      <circle cx="100" cy="92" r="46" fill="#FFCCBC"/>
+
+      <!-- Bangs / hair front -->
+      <path d="M55,84 Q62,52 100,50 Q138,52 145,84 Q130,68 100,66 Q70,68 55,84 Z" fill="#FFD54F"/>
+      <path d="M74,62 Q82,50 95,53" stroke="#FFE082" stroke-width="4.5" fill="none" stroke-linecap="round" opacity="0.65"/>
+
+      <!-- Neck -->
+      <rect x="88" y="134" width="24" height="19" rx="5" fill="#FFCCBC"/>
+
+      <!-- Eyes whites -->
+      <ellipse cx="85"  cy="90" rx="7.5" ry="8.5" fill="white"/>
+      <ellipse cx="115" cy="90" rx="7.5" ry="8.5" fill="white"/>
+      <!-- Iris -->
+      <circle cx="86"  cy="91" r="5.5" fill="#5D4037"/>
+      <circle cx="114" cy="91" r="5.5" fill="#5D4037"/>
+      <circle cx="86"  cy="91" r="2.8" fill="#3E2723"/>
+      <circle cx="114" cy="91" r="2.8" fill="#3E2723"/>
+      <!-- Sparkle in eyes -->
+      <circle cx="88"  cy="88" r="2.2" fill="white"/>
+      <circle cx="116" cy="88" r="2.2" fill="white"/>
+      <!-- Lashes -->
+      <line x1="77" y1="83" x2="75" y2="78" stroke="#4E342E" stroke-width="2" stroke-linecap="round"/>
+      <line x1="83" y1="81" x2="82" y2="76" stroke="#4E342E" stroke-width="2" stroke-linecap="round"/>
+      <line x1="89" y1="81" x2="89" y2="76" stroke="#4E342E" stroke-width="2" stroke-linecap="round"/>
+      <line x1="111" y1="81" x2="111" y2="76" stroke="#4E342E" stroke-width="2" stroke-linecap="round"/>
+      <line x1="117" y1="81" x2="118" y2="76" stroke="#4E342E" stroke-width="2" stroke-linecap="round"/>
+      <line x1="123" y1="83" x2="125" y2="78" stroke="#4E342E" stroke-width="2" stroke-linecap="round"/>
+
+      <!-- Nose -->
+      <ellipse cx="100" cy="101" rx="3.5" ry="2.5" fill="#FFAB91" opacity="0.6"/>
+
+      <!-- Smile -->
+      <path d="M88,114 Q100,125 112,114" stroke="#E91E63" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+      <path d="M91,114 Q100,120 109,114 Q109,118 100,120 Q91,118 91,114 Z" fill="#EF9A9A" opacity="0.55"/>
+
+      <!-- Blush -->
+      <ellipse cx="73"  cy="107" rx="12" ry="8" fill="#FF8A80" opacity="0.3"/>
+      <ellipse cx="127" cy="107" rx="12" ry="8" fill="#FF8A80" opacity="0.3"/>
+
+
+      <!-- ═══ DRESSUP LAYERS (hidden until tapped) ═══ -->
+
+      <!-- CROWN -->
+      <g id="layer-crown" class="item-layer">
+        <rect x="65" y="44" width="70" height="18" rx="5" fill="#FFD700"/>
+        <polygon points="71,44  67,16  86,40" fill="#FFD700"/>
+        <polygon points="97,44 100,8  103,44" fill="#FFD700"/>
+        <polygon points="129,44 133,16 114,40" fill="#FFD700"/>
+        <rect x="65" y="44" width="70" height="18" rx="5" fill="none" stroke="#FFA000" stroke-width="2"/>
+        <circle cx="78"  cy="53" r="6"   fill="#E91E63"/>
+        <circle cx="100" cy="53" r="7.5" fill="#9C27B0"/>
+        <circle cx="122" cy="53" r="6"   fill="#E91E63"/>
+        <circle cx="77"  cy="51" r="2.2" fill="white" opacity="0.7"/>
+        <circle cx="99"  cy="51" r="2.8" fill="white" opacity="0.7"/>
+        <circle cx="121" cy="51" r="2.2" fill="white" opacity="0.7"/>
+        <!-- tip sparkle -->
+        <circle cx="100" cy="8" r="4.5" fill="white" opacity="0.9"/>
+        <line x1="100" y1="0"  x2="100" y2="4"  stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="93"  y1="8"  x2="97"  y2="8"  stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="103" y1="8"  x2="107" y2="8"  stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      </g>
+
+      <!-- HAIR BOW -->
+      <g id="layer-bow" class="item-layer">
+        <ellipse cx="138" cy="68" rx="15" ry="10" fill="#E91E63" transform="rotate(-28,138,68)"/>
+        <ellipse cx="162" cy="64" rx="15" ry="10" fill="#E91E63" transform="rotate(22,162,64)"/>
+        <ellipse cx="150" cy="67" rx="7.5" ry="6.5" fill="#C2185B"/>
+        <path d="M143,73 Q134,83 128,79" stroke="#E91E63" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+        <path d="M157,73 Q166,83 172,79" stroke="#E91E63" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+        <circle cx="148" cy="65" r="2.8" fill="white" opacity="0.6"/>
+      </g>
+
+      <!-- HEART NECKLACE -->
+      <g id="layer-necklace" class="item-layer">
+        <path d="M77,144 Q100,157 123,144" stroke="#CE93D8" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M95,155 Q100,150 105,155 Q111,155 111,161 Q111,167 100,174 Q89,167 89,161 Q89,155 95,155 Z" fill="#E91E63"/>
+        <ellipse cx="97" cy="157" rx="3" ry="2.2" fill="white" opacity="0.6"/>
+      </g>
+
+      <!-- MAGIC WAND -->
+      <g id="layer-wand" class="item-layer">
+        <!-- handle -->
+        <line x1="53" y1="214" x2="72" y2="178" stroke="#CE93D8" stroke-width="6.5" stroke-linecap="round"/>
+        <!-- handle sparkle dots -->
+        <circle cx="58" cy="207" r="4"   fill="#F48FB1" opacity="0.85"/>
+        <circle cx="64" cy="197" r="3"   fill="#EA80FC" opacity="0.8"/>
+        <!-- star -->
+        <polygon points="72,157 75.8,169 88,169 78.1,177 81.9,189 72,181 62.1,189 65.9,177 56,169 68.2,169" fill="#FFD700"/>
+        <polygon points="72,162 74.5,170 81,170 75.5,174 77.5,182 72,178 66.5,182 68.5,174 63,170 69.5,170" fill="#FFF59D"/>
+        <circle cx="72" cy="168" r="3.5" fill="white" opacity="0.8"/>
+        <!-- sparkle trail -->
+        <circle cx="88" cy="168" r="3.5" fill="#FFD700" opacity="0.7"/>
+        <circle cx="96" cy="162" r="2.5" fill="#FFD700" opacity="0.5"/>
+        <circle cx="93" cy="176" r="3"   fill="#FFEB3B" opacity="0.55"/>
+      </g>
+
+    </svg>
+  </div>
+
+  <!-- Item buttons -->
+  <div id="items-area">
+    <div id="items-grid">
+      <button class="item-btn" data-item="crown">
+        <span class="done-tick">&#10003;</span>
+        <span class="item-icon">&#128081;</span>
+        <span class="item-label">Crown</span>
+      </button>
+      <button class="item-btn" data-item="bow">
+        <span class="done-tick">&#10003;</span>
+        <span class="item-icon">&#127872;</span>
+        <span class="item-label">Bow</span>
+      </button>
+      <button class="item-btn" data-item="necklace">
+        <span class="done-tick">&#10003;</span>
+        <span class="item-icon">&#128150;</span>
+        <span class="item-label">Necklace</span>
+      </button>
+      <button class="item-btn" data-item="wand">
+        <span class="done-tick">&#10003;</span>
+        <span class="item-icon">&#11088;</span>
+        <span class="item-label">Wand</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Win overlay -->
+  <div id="win-screen">
+    <div class="win-emoji">&#128144;</div>
+    <div class="win-text">Beautiful!</div>
+    <div class="win-sub">What a pretty princess! &#10024;</div>
+    <button id="again-btn">Again! &#128147;</button>
+  </div>
+
+  <script>
+    const ITEMS = {
+      crown:    { layer: 'layer-crown',    text: 'A beautiful crown!'   },
+      bow:      { layer: 'layer-bow',      text: 'A pretty bow!'        },
+      necklace: { layer: 'layer-necklace', text: 'A sparkly necklace!'  },
+      wand:     { layer: 'layer-wand',     text: 'A magic wand!'        },
+    };
+    const PINKS = ['#e91e63','#f48fb1','#ce93d8','#ffd54f','#ff80ab','#ea80fc','#fff176','#f8bbd0'];
+
+    let doneCount = 0;
+    const svgEl  = document.getElementById('princess-svg');
+    const winEl  = document.getElementById('win-screen');
+
+    function speak(text) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate = 0.85; u.pitch = 1.3; u.lang = 'en-GB';
+      window.speechSynthesis.speak(u);
+    }
+
+    function burst(x, y) {
+      for (let i = 0; i < 9; i++) {
+        const el  = document.createElement('div');
+        el.className = 'spark';
+        const ang = (i / 9) * Math.PI * 2;
+        const d   = 36 + Math.random() * 40;
+        const s   = 7 + Math.random() * 9;
+        el.style.cssText =
+          `left:${x}px;top:${y}px;width:${s}px;height:${s}px;` +
+          `background:${PINKS[Math.floor(Math.random()*PINKS.length)]};` +
+          `animation:spark-fly 0.55s ease-out forwards;` +
+          `--tx:${Math.cos(ang)*d}px;--ty:${Math.sin(ang)*d}px`;
+        document.body.appendChild(el);
+        el.addEventListener('animationend', () => el.remove());
+      }
+    }
+
+    function launchConfetti() {
+      for (let i = 0; i < 72; i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        const s = 7 + Math.random() * 10;
+        el.style.cssText =
+          `left:${Math.random()*100}vw;top:-20px;` +
+          `background:${PINKS[Math.floor(Math.random()*PINKS.length)]};` +
+          `border-radius:${Math.random()>.5?'50%':'4px'};` +
+          `width:${s}px;height:${s}px;` +
+          `animation-duration:${1.6+Math.random()*2}s;` +
+          `animation-delay:${Math.random()*0.7}s`;
+        document.body.appendChild(el);
+        el.addEventListener('animationend', () => el.remove());
+      }
+    }
+
+    function onTap(btn) {
+      if (btn.classList.contains('done')) return;
+      const id   = btn.dataset.item;
+      const item = ITEMS[id];
+      const layer = document.getElementById(item.layer);
+
+      // Show item on princess
+      layer.classList.add('show');
+      // Mark button done
+      btn.classList.add('done');
+      // Burst sparkles from button
+      const r = btn.getBoundingClientRect();
+      burst(r.left + r.width / 2, r.top + r.height / 2);
+      // Speak
+      speak(item.text);
+
+      doneCount++;
+      if (doneCount >= Object.keys(ITEMS).length) {
+        setTimeout(() => {
+          svgEl.classList.add('celebrate');
+          winEl.classList.add('show');
+          speak('Beautiful! What a gorgeous princess!');
+          launchConfetti();
+        }, 700);
+      }
+    }
+
+    function reset() {
+      doneCount = 0;
+      svgEl.classList.remove('celebrate');
+      winEl.classList.remove('show');
+      document.querySelectorAll('.confetti-piece').forEach(el => el.remove());
+      Object.values(ITEMS).forEach(item => {
+        document.getElementById(item.layer).classList.remove('show');
+      });
+      document.querySelectorAll('.item-btn').forEach(b => b.classList.remove('done'));
+    }
+
+    // Inject sparkle keyframe (uses CSS custom props for per-particle direction)
+    document.head.insertAdjacentHTML('beforeend', `<style>
+      @keyframes spark-fly {
+        0%   { transform: translate(0,0) scale(1); opacity: 1; }
+        100% { transform: translate(var(--tx),var(--ty)) scale(0); opacity: 0; }
+      }
+    </style>`);
+
+    document.querySelectorAll('.item-btn').forEach(b => b.addEventListener('click', () => onTap(b)));
+    document.getElementById('again-btn').addEventListener('click', reset);
+
+    setTimeout(() => speak('Dress the princess!'), 700);
+  </script>
+</body>
+</html>
