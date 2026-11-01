@@ -11,7 +11,7 @@
     body {
       font-family: 'Nunito', 'Helvetica Neue', Arial, sans-serif;
       background: #f0eeff;
-      min-height: 100vh;
+      height: 100svh;
       display: flex; flex-direction: column; align-items: center;
       overflow: hidden; user-select: none; touch-action: manipulation;
     }
@@ -30,7 +30,7 @@
     #prompt-area { padding: 4px 20px 16px; text-align: center; flex-shrink: 0; }
     #tap-label { font-size: clamp(19px,5.5vw,30px); color: #888; font-weight: 700; }
     #shape-name {
-      font-size: clamp(46px,15vw,92px); font-weight: 900; color: #1d7fc4; line-height: 1.1;
+      font-size: clamp(30px,min(15vw,12svh),92px); font-weight: 900; color: #1d7fc4; line-height: 1.1;
       text-shadow: 3px 4px 0 rgba(0,0,0,0.08);
     }
     #shape-name.pulse { animation: pulse 0.4s ease; }
@@ -39,13 +39,14 @@
       display: grid; grid-template-columns: 1fr 1fr;
       gap: clamp(14px,3.5vw,28px);
       padding: 0 clamp(16px,4vw,32px) clamp(16px,4vw,28px);
-      width: 100%; max-width: 520px; flex: 1; align-content: center;
+      width: 100%; max-width: 520px; flex: 1; min-height: 0; align-content: center;
     }
     .shape-btn {
       border: none; border-radius: clamp(18px,5vw,32px); aspect-ratio: 1; cursor: pointer;
       transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.12s;
       box-shadow: 0 8px 24px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.08);
       background: white; display: flex; align-items: center; justify-content: center; padding: 18%;
+      max-height: calc((100svh - 220px) / 2);
     }
     .shape-btn:active { transform: scale(0.91) !important; box-shadow: 0 3px 10px rgba(0,0,0,0.12); }
     .shape-btn.wrong-shake { animation: shake 0.4s ease; }
