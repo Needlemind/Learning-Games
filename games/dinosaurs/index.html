@@ -176,18 +176,9 @@
       transition: opacity 0.3s;
       gap: 12px;
     }
-    #celebration.show { opacity: 1; pointer-events: all; }
+    #celebration.show { opacity: 1; pointer-events: all; cursor: pointer; }
     #cel-emoji  { font-size: clamp(80px, 24vw, 130px); animation: bounce 0.5s ease infinite alternate; }
     #cel-text   { font-size: clamp(2rem, 8vw, 3.2rem); font-weight: 900; color: #fff; text-shadow: 3px 3px 0 rgba(0,0,0,0.3); text-align: center; padding: 0 16px; }
-    #next-btn {
-      margin-top: 8px; padding: 16px 48px;
-      font-size: clamp(1.2rem, 5vw, 1.6rem); font-family: inherit; font-weight: 900;
-      background: linear-gradient(145deg, #ff69b4, #c44d90);
-      border: 3px solid #8b2060; border-radius: 50px; color: #fff; cursor: pointer;
-      box-shadow: 0 5px 14px rgba(0,0,0,0.3);
-      transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
-    }
-    #next-btn:active { transform: scale(0.93); }
     @keyframes bounce { from{transform:translateY(0) scale(1)} to{transform:translateY(-18px) scale(1.1)} }
     #streak-bar{display:flex;gap:8px;justify-content:center;padding:4px 0 0;font-size:clamp(22px,6vw,32px);line-height:1;position:fixed;top:60px;left:0;right:0;z-index:11;}
     .star.lit{filter:drop-shadow(0 2px 6px rgba(255,180,0,0.9));}
@@ -221,7 +212,6 @@
 <div id="celebration">
   <div id="cel-emoji">🦕</div>
   <div id="cel-text">Well done!</div>
-  <button id="next-btn">Next! 🦖</button>
 </div>
 
 <script>
@@ -350,7 +340,7 @@ function launchConfetti() {
   }
 }
 
-document.getElementById('next-btn').addEventListener('click', () => { clearTimeout(autoTimer); newRound(); });
+celebEl.addEventListener('click', () => { clearTimeout(autoTimer); newRound(); });
 document.getElementById('speaker-btn').addEventListener('click', () => speak('How many dinosaurs can you count?'));
 newRound();
 </script>
