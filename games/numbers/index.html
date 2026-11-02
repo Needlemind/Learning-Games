@@ -74,6 +74,8 @@
     @keyframes fall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(110vh) rotate(720deg);opacity:0.2} }
     #streak-bar{display:flex;gap:8px;justify-content:center;padding:2px 0 4px;font-size:clamp(22px,6vw,32px);flex-shrink:0;line-height:1;}
     .star.lit{filter:drop-shadow(0 2px 6px rgba(255,180,0,0.7));}
+    .hint-glow{animation:hint-pulse 0.65s ease 3;}
+    @keyframes hint-pulse{0%,100%{box-shadow:0 8px 24px rgba(0,0,0,0.2),0 0 0 0 rgba(255,220,0,0)}50%{box-shadow:0 8px 24px rgba(0,0,0,0.2),0 0 0 18px rgba(255,220,0,0.85)}}
   </style>
 </head>
 <body>
@@ -107,7 +109,7 @@
       { name:'Ten',   num:10, color:'#388e3c', emoji:'🍉', fruit:'Watermelon' },
     ];
     const CELEBRATIONS = ['Well done!','Amazing!','You got it!','Brilliant!','Hooray!'];
-    let target=null, blocked=false, streak=0, autoTimer=null;
+    let target=null, blocked=false, streak=0, wrongCount=0, autoTimer=null;
 
     const nameEl  = document.getElementById('number-name');
     const hintEl  = document.getElementById('hint');
@@ -135,7 +137,7 @@
 
     function newRound() {
       clearTimeout(autoTimer);
-      blocked = false;
+      blocked = false; wrongCount = 0;
       celebEl.classList.remove('show');
       document.querySelectorAll('.confetti-piece').forEach(el => el.remove());
 
@@ -152,6 +154,7 @@
         btn.className = 'number-btn';
         btn.setAttribute('aria-label', n.name);
         btn.style.background = n.color;
+        if(n.num===target.num) btn.dataset.correct='1';
         btn.innerHTML = `<span class="number-glyph">${n.num}</span><span class="number-emoji">${n.emoji}</span>`;
         btn.addEventListener('click', () => onTap(n, btn));
         gridEl.appendChild(btn);
@@ -174,11 +177,14 @@
         launchConfetti();
         autoTimer = setTimeout(newRound, 2500);
       } else {
-        blocked = true;
+        blocked = true; wrongCount++;
         playTone('wrong'); updateStreak(false);
         btn.classList.remove('wrong-shake'); void btn.offsetWidth; btn.classList.add('wrong-shake');
         speak('Try again! Tap the number ' + target.name);
-        setTimeout(() => { blocked = false; }, 900);
+        setTimeout(()=>{
+          blocked=false;
+          if(wrongCount>=2){const cb=gridEl.querySelector('[data-correct]');if(cb){cb.classList.remove('hint-glow');void cb.offsetWidth;cb.classList.add('hint-glow');}}
+        },900);
       }
     }
 
