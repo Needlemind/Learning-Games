@@ -27,6 +27,9 @@
     }
     .nav-btn:active { background: rgba(0,0,0,0.13); transform: scale(0.9); }
     .game-title { font-size: clamp(17px,4.5vw,22px); font-weight: 800; color: #3a3848; }
+    #mode-toggle { display:flex; gap:6px; justify-content:center; padding:0 0 6px; flex-shrink:0; }
+    .mode-pill { border:none; border-radius:20px; padding:5px 16px; font-size:clamp(14px,3.5vw,17px); font-weight:800; cursor:pointer; background:rgba(0,0,0,0.07); color:#888; font-family:inherit; transition:background 0.15s,color 0.15s; }
+    .mode-pill.active { background:#2e9c4b; color:white; }
     #prompt-area { padding: 4px 20px 8px; text-align: center; flex-shrink: 0; }
     #tap-label { font-size: clamp(19px,5.5vw,30px); color: #888; font-weight: 700; }
     #letter-name {
@@ -80,10 +83,14 @@
 <body>
   <header class="game-header">
     <a href="../../" class="nav-btn" aria-label="Home">&#127968;</a>
-    <span class="game-title">Letters</span>
+    <span class="game-title">&#129417; Letters</span>
     <button class="nav-btn" id="speaker-btn" aria-label="Repeat">&#128266;</button>
   </header>
   <div id="streak-bar"><span class="star" id="s1">☆</span><span class="star" id="s2">☆</span><span class="star" id="s3">☆</span></div>
+  <div id="mode-toggle">
+    <button class="mode-pill active" id="btn-upper">ABC</button>
+    <button class="mode-pill" id="btn-lower">abc</button>
+  </div>
   <div id="prompt-area">
     <div id="tap-label">Tap the letter</div>
     <div id="letter-name"></div>
@@ -113,7 +120,7 @@
     const BTN_COLORS=['#e63946','#1d7fc4','#f4b400','#2e9c4b'];
     const EMOJIS=['🌟','🎉','🥳','⭐','🎊','✨','🦄','🌈'];
     const CELEBRATIONS=['Well done!','Amazing!','You got it!','Brilliant!','Hooray!'];
-    let target=null, blocked=false, streak=0, wrongCount=0, autoTimer=null;
+    let target=null, blocked=false, streak=0, wrongCount=0, autoTimer=null, mode='upper';
     const nameEl=document.getElementById('letter-name');
     const hintEl=document.getElementById('hint');
     const gridEl=document.getElementById('grid');
@@ -122,23 +129,31 @@
     function speak(text){if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=0.85;u.pitch=1.2;window.speechSynthesis.speak(u);}
     function playTone(type){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();if(type==='correct'){[[523,0],[659,0.1],[784,0.2]].forEach(([freq,t])=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=freq;o.type='sine';g.gain.setValueAtTime(0,ctx.currentTime+t);g.gain.linearRampToValueAtTime(0.28,ctx.currentTime+t+0.01);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+t+0.28);o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+0.32);});}else{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.setValueAtTime(280,ctx.currentTime);o.frequency.exponentialRampToValueAtTime(90,ctx.currentTime+0.3);g.gain.setValueAtTime(0.3,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.35);o.start(ctx.currentTime);o.stop(ctx.currentTime+0.4);}}catch(e){}}
     function updateStreak(hit){if(hit){streak++;}else{streak=0;}const show=Math.min(streak,3);['s1','s2','s3'].forEach((id,i)=>{const el=document.getElementById(id);if(i<show){el.textContent='⭐';el.classList.add('lit');}else{el.textContent='☆';el.classList.remove('lit');}});if(streak===3){streak=0;setTimeout(()=>speak('Three in a row! Amazing!'),800);}}
+    function displayL(l){return mode==='lower'?l.toLowerCase():l;}
     function newRound(){
       clearTimeout(autoTimer);
       blocked=false; wrongCount=0; celebEl.classList.remove('show');
       document.querySelectorAll('.confetti-piece').forEach(el=>el.remove());
       const pool=shuffle(LETTERS).slice(0,4);
       target=pool[Math.floor(Math.random()*pool.length)];
-      nameEl.textContent=target.l; hintEl.textContent=target.emoji+' '+target.word;
+      nameEl.textContent=displayL(target.l); hintEl.textContent=target.emoji+' '+target.word;
       gridEl.innerHTML='';
       pool.forEach((item,i)=>{
         const btn=document.createElement('button'); btn.className='letter-btn';
         btn.style.background=BTN_COLORS[i]; btn.setAttribute('aria-label','Letter '+item.l);
         if(item.l===target.l) btn.dataset.correct='1';
-        btn.innerHTML=`<span class="letter-glyph">${item.l}</span><span class="letter-emoji">${item.emoji}</span>`;
+        btn.innerHTML=`<span class="letter-glyph">${displayL(item.l)}</span><span class="letter-emoji">${item.emoji}</span>`;
         btn.addEventListener('click',()=>onTap(item,btn)); gridEl.appendChild(btn);
       });
       nameEl.classList.remove('pulse'); void nameEl.offsetWidth; nameEl.classList.add('pulse');
       setTimeout(()=>speak('Tap the letter '+target.l),300);
+    }
+    function setMode(m){
+      mode=m;
+      document.getElementById('btn-upper').classList.toggle('active',m==='upper');
+      document.getElementById('btn-lower').classList.toggle('active',m==='lower');
+      clearTimeout(autoTimer);
+      newRound();
     }
     function onTap(item,btn){
       if(blocked) return;
@@ -169,12 +184,12 @@
         document.body.appendChild(el); el.addEventListener('animationend',()=>el.remove());
       }
     }
-    celebEl.addEventListener('click', () => { clearTimeout(autoTimer); document.addEventListener("selectstart",e=>e.preventDefault());
-    document.addEventListener("dragstart",e=>e.preventDefault());
-    newRound(); });
+    document.getElementById('btn-upper').addEventListener('click',()=>setMode('upper'));
+    document.getElementById('btn-lower').addEventListener('click',()=>setMode('lower'));
+    celebEl.addEventListener('click',()=>{clearTimeout(autoTimer);newRound();});
     document.getElementById('speaker-btn').addEventListener('click',()=>{if(target)speak('Tap the letter '+target.l);});
-    document.addEventListener("selectstart",e=>e.preventDefault());
-    document.addEventListener("dragstart",e=>e.preventDefault());
+    document.addEventListener('selectstart',e=>e.preventDefault());
+    document.addEventListener('dragstart',e=>e.preventDefault());
     newRound();
   </script>
 </body>
