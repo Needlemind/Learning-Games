@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
     body {
       font-family: 'Nunito', 'Helvetica Neue', Arial, sans-serif;
       background: #fff8f0;
@@ -252,8 +252,12 @@
         document.body.appendChild(el); el.addEventListener('animationend',()=>el.remove());
       }
     }
-    celebEl.addEventListener('click', () => { clearTimeout(autoTimer); newRound(); });
+    celebEl.addEventListener('click', () => { clearTimeout(autoTimer); document.addEventListener("selectstart",e=>e.preventDefault());
+    document.addEventListener("dragstart",e=>e.preventDefault());
+    newRound(); });
     document.getElementById('speaker-btn').addEventListener('click',()=>{ if(target) speak('Tap the '+target.name); });
+    document.addEventListener("selectstart",e=>e.preventDefault());
+    document.addEventListener("dragstart",e=>e.preventDefault());
     newRound();
   </script>
 </body>

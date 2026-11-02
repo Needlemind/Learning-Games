@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
     body {
       font-family: 'Nunito', 'Helvetica Neue', Arial, sans-serif;
       background: linear-gradient(160deg, #fce4ec 0%, #f8bbd0 60%, #fce4ec 100%);
@@ -460,6 +460,8 @@
     btns.forEach(b => b.addEventListener('click', () => onTap(b)));
     document.getElementById('again-btn').addEventListener('click', reset);
 
+    document.addEventListener('selectstart',e=>e.preventDefault());
+    document.addEventListener('dragstart',e=>e.preventDefault());
     setupRound();
     setTimeout(() => speak('Dress the princess!'), 700);
   </script>
