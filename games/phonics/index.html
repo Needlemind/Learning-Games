@@ -567,6 +567,9 @@ function getAvailableWords() {
   });
 }
 
+// ── Audio ─────────────────────────────────────────────────────────────────────
+function playTone(type){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();if(type==='correct'){[[523,0],[659,0.1],[784,0.2]].forEach(([freq,t])=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=freq;o.type='sine';g.gain.setValueAtTime(0,ctx.currentTime+t);g.gain.linearRampToValueAtTime(0.28,ctx.currentTime+t+0.01);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+t+0.28);o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+0.32);});}else{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.setValueAtTime(280,ctx.currentTime);o.frequency.exponentialRampToValueAtTime(90,ctx.currentTime+0.3);g.gain.setValueAtTime(0.3,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.35);o.start(ctx.currentTime);o.stop(ctx.currentTime+0.4);}}catch(e){}}
+
 // ── Speech ────────────────────────────────────────────────────────────────────
 function speak(text, rate=0.88, pitch=1.1) {
   window.speechSynthesis.cancel();
@@ -778,6 +781,7 @@ function checkAnswer() {
   const boxes = document.querySelectorAll('.box');
 
   if (built === right) {
+    playTone('correct');
     boxes.forEach(b => { b.classList.remove('filled'); b.classList.add('correct'); });
     setFingersCorrect();
     document.getElementById('message').textContent = '🌾 Well done!';
@@ -792,6 +796,7 @@ function checkAnswer() {
     roundResults.push({ word:w.word, emoji:w.emoji, tries:tryCount+1 });
   } else {
     tryCount++;
+    playTone('wrong');
     boxes.forEach(b => b.classList.add('wrong'));
     setFingersWrong();
     document.getElementById('message').textContent = '🐄 Try again!';

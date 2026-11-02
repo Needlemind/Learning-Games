@@ -172,6 +172,8 @@
     #play-again-btn:active { transform: scale(0.94); }
     .confetti-piece { position: fixed; animation: fall linear forwards; pointer-events: none; }
     @keyframes fall { 0%{opacity:1;transform:translateY(-20px) rotate(0deg)} 100%{opacity:0.2;transform:translateY(110vh) rotate(720deg)} }
+    #streak-bar{display:flex;gap:8px;justify-content:center;padding:2px 0 4px;font-size:clamp(22px,6vw,30px);flex-shrink:0;line-height:1;}
+    .star.lit{filter:drop-shadow(0 2px 6px rgba(255,180,0,0.7));}
   </style>
 </head>
 <body>
@@ -180,6 +182,7 @@
     <span class="game-title">&#127950; Road Race!</span>
     <button class="nav-btn" id="speaker-btn" aria-label="Repeat">&#128266;</button>
   </header>
+  <div id="streak-bar"><span class="star" id="s1">☆</span><span class="star" id="s2">☆</span><span class="star" id="s3">☆</span></div>
 
   <div id="track-wrap">
     <div id="grass-left">
@@ -240,31 +243,31 @@
 
   <script>
     const QUESTIONS = [
-      { q:'What colour is the sun?',       emoji:'&#9728;&#65039;', answers:['Yellow','Blue','Red','Green'],       correct:0 },
-      { q:'What colour is the sky?',        emoji:'&#127780;&#65039;',answers:['Blue','Yellow','Pink','Orange'],     correct:0 },
-      { q:'What colour is grass?',          emoji:'&#127807;',       answers:['Green','Brown','Blue','Purple'],     correct:0 },
-      { q:'What colour is a tomato?',       emoji:'&#127813;',       answers:['Red','Yellow','Blue','Green'],       correct:0 },
-      { q:'What colour is a banana?',       emoji:'&#127820;',       answers:['Yellow','Orange','Green','Red'],     correct:0 },
-      { q:'What colour is an apple?',       emoji:'&#127822;',       answers:['Red','Blue','Yellow','Purple'],      correct:0 },
-      { q:'What colour is a carrot?',       emoji:'&#129365;',       answers:['Orange','Red','Yellow','Blue'],      correct:0 },
-      { q:'What colour is the sea?',        emoji:'&#127754;',       answers:['Blue','Green','Red','Yellow'],       correct:0 },
-      { q:'What colour is snow?',           emoji:'&#10052;&#65039;',answers:['White','Blue','Grey','Yellow'],      correct:0 },
-      { q:'How many sides has a square?',   emoji:'&#128998;',       answers:['4','3','5','6'],                     correct:0 },
-      { q:'How many sides has a triangle?', emoji:'&#128314;',       answers:['3','4','2','5'],                     correct:0 },
-      { q:'How many fingers on one hand?',  emoji:'&#9995;',         answers:['5','4','3','6'],                     correct:0 },
-      { q:'How many legs does a dog have?', emoji:'&#128054;',       answers:['4','2','3','6'],                     correct:0 },
-      { q:'How many wheels on a car?',      emoji:'&#128663;',       answers:['4','2','3','5'],                     correct:0 },
-      { q:'How many ears do you have?',     emoji:'&#128066;',       answers:['2','1','3','4'],                     correct:0 },
-      { q:'What does a cow say?',           emoji:'&#128004;',       answers:['Moo','Woof','Meow','Oink'],          correct:0 },
-      { q:'What does a dog say?',           emoji:'&#128054;',       answers:['Woof','Moo','Meow','Baa'],           correct:0 },
-      { q:'What does a cat say?',           emoji:'&#128049;',       answers:['Meow','Woof','Moo','Quack'],         correct:0 },
-      { q:'What does a duck say?',          emoji:'&#129414;',       answers:['Quack','Moo','Roar','Woof'],         correct:0 },
-      { q:'What does a sheep say?',         emoji:'&#128017;',       answers:['Baa','Moo','Woof','Oink'],           correct:0 },
-      { q:'What sound does a lion make?',   emoji:'&#129409;',       answers:['Roar','Moo','Meow','Quack'],         correct:0 },
-      { q:'What shape is a wheel?',         emoji:'&#127905;',       answers:['Circle','Square','Triangle','Star'], correct:0 },
-      { q:'Count the stars: &#11088;&#11088;&#11088;',    emoji:'', answers:['3','2','4','5'], correct:0 },
-      { q:'Count the apples: &#127822;&#127822;',         emoji:'', answers:['2','1','3','4'], correct:0 },
-      { q:'Count the hearts: &#10084;&#65039;&#10084;&#65039;&#10084;&#65039;&#10084;&#65039;', emoji:'', answers:['4','3','5','2'], correct:0 },
+      { q:'What colour is the sun?',       emoji:'&#9728;&#65039;', answers:['Yellow','Blue','Red','Green'],       correct:0, diff:1 },
+      { q:'What colour is the sky?',        emoji:'&#127780;&#65039;',answers:['Blue','Yellow','Pink','Orange'],     correct:0, diff:1 },
+      { q:'What colour is grass?',          emoji:'&#127807;',       answers:['Green','Brown','Blue','Purple'],     correct:0, diff:1 },
+      { q:'What colour is a tomato?',       emoji:'&#127813;',       answers:['Red','Yellow','Blue','Green'],       correct:0, diff:1 },
+      { q:'What colour is a banana?',       emoji:'&#127820;',       answers:['Yellow','Orange','Green','Red'],     correct:0, diff:1 },
+      { q:'What does a cow say?',           emoji:'&#128004;',       answers:['Moo','Woof','Meow','Oink'],          correct:0, diff:1 },
+      { q:'What does a dog say?',           emoji:'&#128054;',       answers:['Woof','Moo','Meow','Baa'],           correct:0, diff:1 },
+      { q:'What does a cat say?',           emoji:'&#128049;',       answers:['Meow','Woof','Moo','Quack'],         correct:0, diff:1 },
+      { q:'What does a duck say?',          emoji:'&#129414;',       answers:['Quack','Moo','Roar','Woof'],         correct:0, diff:1 },
+      { q:'What does a sheep say?',         emoji:'&#128017;',       answers:['Baa','Moo','Woof','Oink'],           correct:0, diff:1 },
+      { q:'Count the apples: &#127822;&#127822;',         emoji:'', answers:['2','1','3','4'], correct:0, diff:1 },
+      { q:'What colour is an apple?',       emoji:'&#127822;',       answers:['Red','Blue','Yellow','Purple'],      correct:0, diff:2 },
+      { q:'What colour is a carrot?',       emoji:'&#129365;',       answers:['Orange','Red','Yellow','Blue'],      correct:0, diff:2 },
+      { q:'What colour is the sea?',        emoji:'&#127754;',       answers:['Blue','Green','Red','Yellow'],       correct:0, diff:2 },
+      { q:'What colour is snow?',           emoji:'&#10052;&#65039;',answers:['White','Blue','Grey','Yellow'],      correct:0, diff:2 },
+      { q:'What does a lion make?',         emoji:'&#129409;',       answers:['Roar','Moo','Meow','Quack'],         correct:0, diff:2 },
+      { q:'What shape is a wheel?',         emoji:'&#127905;',       answers:['Circle','Square','Triangle','Star'], correct:0, diff:2 },
+      { q:'How many sides has a triangle?', emoji:'&#128314;',       answers:['3','4','2','5'],                     correct:0, diff:2 },
+      { q:'How many ears do you have?',     emoji:'&#128066;',       answers:['2','1','3','4'],                     correct:0, diff:2 },
+      { q:'Count the stars: &#11088;&#11088;&#11088;',    emoji:'', answers:['3','2','4','5'], correct:0, diff:2 },
+      { q:'How many sides has a square?',   emoji:'&#128998;',       answers:['4','3','5','6'],                     correct:0, diff:3 },
+      { q:'How many fingers on one hand?',  emoji:'&#9995;',         answers:['5','4','3','6'],                     correct:0, diff:3 },
+      { q:'How many legs does a dog have?', emoji:'&#128054;',       answers:['4','2','3','6'],                     correct:0, diff:3 },
+      { q:'How many wheels on a car?',      emoji:'&#128663;',       answers:['4','2','3','5'],                     correct:0, diff:3 },
+      { q:'Count the hearts: &#10084;&#65039;&#10084;&#65039;&#10084;&#65039;&#10084;&#65039;', emoji:'', answers:['4','3','5','2'], correct:0, diff:3 },
     ];
 
     const OBSTACLES    = ['&#128738;&#65039;','&#128004;','&#128020;','&#129040;','&#128166;','&#128056;','&#127797;','&#127875;'];
@@ -273,7 +276,7 @@
     const CAR_START = 6, CAR_END = 88;
     const STEP = (CAR_END - CAR_START) / TOTAL;
 
-    let roundQs = [], currentQ = 0, progress = 0, blocked = false;
+    let roundQs = [], currentQ = 0, progress = 0, blocked = false, streak = 0;
 
     const carWrapEl  = document.getElementById('car-wrap');
     const obstacleEl = document.getElementById('obstacle');
@@ -299,9 +302,15 @@
       u.rate = 0.85; u.pitch = 1.2; u.lang = 'en-GB';
       window.speechSynthesis.speak(u);
     }
+    function playTone(type){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();if(type==='correct'){[[523,0],[659,0.1],[784,0.2]].forEach(([freq,t])=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=freq;o.type='sine';g.gain.setValueAtTime(0,ctx.currentTime+t);g.gain.linearRampToValueAtTime(0.28,ctx.currentTime+t+0.01);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+t+0.28);o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+0.32);});}else{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.setValueAtTime(280,ctx.currentTime);o.frequency.exponentialRampToValueAtTime(90,ctx.currentTime+0.3);g.gain.setValueAtTime(0.3,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.35);o.start(ctx.currentTime);o.stop(ctx.currentTime+0.4);}}catch(e){}}
+    function updateStreak(hit){if(hit){streak++;}else{streak=0;}const show=Math.min(streak,3);['s1','s2','s3'].forEach((id,i)=>{const el=document.getElementById(id);if(i<show){el.textContent='⭐';el.classList.add('lit');}else{el.textContent='☆';el.classList.remove('lit');}});if(streak===3){streak=0;setTimeout(()=>speak('Three in a row! Amazing!'),800);}}
 
     function startGame() {
-      roundQs = shuffle(QUESTIONS).slice(0, TOTAL);
+      streak = 0; updateStreak(false);
+      const easy=shuffle(QUESTIONS.filter(q=>q.diff===1));
+      const med =shuffle(QUESTIONS.filter(q=>q.diff===2));
+      const hard=shuffle(QUESTIONS.filter(q=>q.diff===3));
+      roundQs=[...easy.slice(0,3),...med.slice(0,3),...hard.slice(0,2)];
       currentQ = 0; progress = 0; blocked = false;
       winEl.classList.remove('show');
       document.querySelectorAll('.confetti-piece').forEach(el => el.remove());
@@ -336,6 +345,7 @@
       if (blocked) return;
       if (btn.dataset.correct === 'true') {
         blocked = true;
+        playTone('correct'); updateStreak(true);
         progress++;
         carWrapEl.style.bottom = (CAR_START + progress * STEP) + '%';
         markingsEl.classList.add('moving');
@@ -349,6 +359,8 @@
           setTimeout(showQuestion, 1000);
         }
       } else {
+        blocked = true;
+        playTone('wrong'); updateStreak(false);
         btn.classList.remove('wrong'); void btn.offsetWidth; btn.classList.add('wrong');
         // Obstacle appears just ahead of car
         const carBottom = CAR_START + progress * STEP;
@@ -360,7 +372,7 @@
         carWrapEl.classList.remove('shake'); void carWrapEl.offsetWidth;
         carWrapEl.classList.add('shake');
         speak('Try again!');
-        setTimeout(() => { obstacleEl.classList.remove('pop'); }, 1500);
+        setTimeout(() => { obstacleEl.classList.remove('pop'); blocked = false; }, 1500);
       }
     }
 
