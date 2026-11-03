@@ -699,7 +699,7 @@ function pickPic(btn) {
     btn.classList.add('correct');
     playTone('correct');
     document.getElementById('p1-message').textContent = '🌾 Great reading!';
-    setTimeout(() => { document.getElementById('build-btn').style.display = ''; }, 700);
+    setTimeout(() => { document.getElementById('build-btn').style.display = 'block'; }, 700);
   } else {
     btn.classList.add('wrong');
     playTone('wrong');
