@@ -276,6 +276,19 @@
     const CAR_START = 6, CAR_END = 88;
     const STEP = (CAR_END - CAR_START) / TOTAL;
 
+    const COLOUR_MAP = {
+      'red':    { bg:'#cc2222', color:'white'  },
+      'blue':   { bg:'#1d7fc4', color:'white'  },
+      'green':  { bg:'#2e9c4b', color:'white'  },
+      'yellow': { bg:'#f0c000', color:'#333'   },
+      'orange': { bg:'#e87722', color:'white'  },
+      'pink':   { bg:'#e84393', color:'white'  },
+      'purple': { bg:'#7b2d8b', color:'white'  },
+      'brown':  { bg:'#7a4a1a', color:'white'  },
+      'white':  { bg:'#e8e8e8', color:'#333'   },
+      'grey':   { bg:'#888888', color:'white'  },
+    };
+
     let roundQs = [], currentQ = 0, progress = 0, blocked = false, streak = 0;
 
     const carWrapEl  = document.getElementById('car-wrap');
@@ -333,6 +346,9 @@
         btn.dataset.correct = shuffled[i].isCorrect;
         btn.classList.remove('wrong');
         btn.disabled = false;
+        const c = COLOUR_MAP[shuffled[i].text.toLowerCase()];
+        btn.style.background = c ? c.bg : '';
+        btn.style.color      = c ? c.color : '';
       });
 
       setTimeout(() => {
